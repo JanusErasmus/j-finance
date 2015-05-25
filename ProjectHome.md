@@ -1,0 +1,1 @@
+Create a budget on your PC and add entries to it with your mobile phone
