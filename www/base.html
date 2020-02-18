@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>JFinance</title>
+	<script src="./nav.js"></script>
+	<link rel="stylesheet" href="./base.css" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="icon" type="image/ico" href="./jfinicon.ico" />
+	{% block styles %}
+	{% end %}
+</head>
+
+<body>
+
+<header>
+<a href="/"><img src="./jfinicon.ico" alt="JFinance"></a>
+  {% block header %}
+  J Finance
+  {% end %}
+</header>
+
+<section>
+  <nav>
+    {% block c %}
+      <a href="/cities">Cities</a>
+	{% end %}
+  </nav>
+  
+  <article>
+    {% block article %}
+	Article
+	{% end %}
+  </article>
+</section>
+
+<footer>
+  <p>J Finance web - 0.0.0</p>
+</footer>
+
+
+</body>
+</html>
