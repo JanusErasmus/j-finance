@@ -10,5 +10,10 @@
 
 <!-- Needs a list of city objects  -->
 {% block article %}
-We need some content
+We need some content <br>
+	{%for cat in categories%}	
+	<li>
+		{{cat}} <br>
+	</li>
+	{% end %}
 {% end %}

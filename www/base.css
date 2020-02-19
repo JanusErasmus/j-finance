@@ -41,13 +41,15 @@
     text-align: center;
     display: block;
   }
-  
+  section a:hover {
+    background: lightgray;
+  }
   /* Style the navigation menu */
   nav {
     -webkit-flex: 1;
     -ms-flex: 1;
     flex: 1;
-    background: #ccc;
+    background-color: #ccc;
     padding: 20px;
   }
   

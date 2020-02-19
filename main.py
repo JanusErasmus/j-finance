@@ -3,6 +3,8 @@ import tornado.web
 import logging
 import os
 
+import jfin_data
+
 logging.basicConfig(level=logging.DEBUG)
 logger = logging
 
@@ -11,9 +13,13 @@ class MainHandler(tornado.web.RequestHandler):
     def get(self):
         self.render('./www/index.html')
 
+class TransactionsHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render('./www/transactions.html', transactions=jfin_data.get_transactions(1))
+
 class CategoriesHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render('./www/categories.html')
+        self.render('./www/categories.html', categories=jfin_data.get_categories())
 
 class CityHandler(tornado.web.RequestHandler):
     _cities = [{'name': "Hendrina",
@@ -61,7 +67,8 @@ def main():
     app = tornado.web.Application(
         handlers=[
             tornado.web.url(r"/", MainHandler, name="index"),
-            tornado.web.url(r"/categories", CategoriesHandler, name="categories"),
+            tornado.web.url(r"/transactions", TransactionsHandler, name="trans"),
+            tornado.web.url(r"/categories", CategoriesHandler, name="cats"),
             tornado.web.url(r"/cities", CityHandler, name="city"),
 
             (r"/(.*\.ico)",  tornado.web.StaticFileHandler, {"path": loc}),      # allow all .ico files (for favicon)

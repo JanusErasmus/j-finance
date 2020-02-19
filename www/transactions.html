@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block header %}
+		Transactions
+{% end %}
+
+{% block styles %}
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+td:hover {
+	background-color: #c00
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+{% end %}
+
+<!-- Needs a list of city objects  -->
+{% block article %}
+	<table>
+	<tr>
+	<th>Date</th>
+	<th>Category</th>
+	<th>Description</th>
+	<th>Amount</th>
+	</tr>
+	{%for t in transactions%}
+	<tr>
+		<td>{{t.date}}</td>
+		<td>{{t.category}}</td>
+		<td>{{t.description}}</td>
+		<td>{{t.amount}}</td>
+	</tr>
+	{% end %}
+	</table>
+{% end %}
