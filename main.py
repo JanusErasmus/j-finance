@@ -11,6 +11,9 @@ class MainHandler(tornado.web.RequestHandler):
     def get(self):
         self.render('./www/index.html')
 
+class CategoriesHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render('./www/categories.html')
 
 class CityHandler(tornado.web.RequestHandler):
     _cities = [{'name': "Hendrina",
@@ -58,6 +61,7 @@ def main():
     app = tornado.web.Application(
         handlers=[
             tornado.web.url(r"/", MainHandler, name="index"),
+            tornado.web.url(r"/categories", CategoriesHandler, name="categories"),
             tornado.web.url(r"/cities", CityHandler, name="city"),
 
             (r"/(.*\.ico)",  tornado.web.StaticFileHandler, {"path": loc}),      # allow all .ico files (for favicon)
