@@ -10,10 +10,18 @@
 
 <!-- Needs a list of city objects  -->
 {% block article %}
-We need some content <br>
+	<table>
+	<tr>
+	<th>Category</th>
+	</tr>
 	{%for cat in categories%}	
-	<li>
-		{{cat}} <br>
-	</li>
+	<tr><td>{{cat}}</td></tr>
 	{% end %}
+	<tr><td>
+		<form method="POST">
+			<input type="text" id="category" name="category_edit">
+			<input type="submit" value="Add">
+		</form>
+	</td></tr>
+	</table>
 {% end %}

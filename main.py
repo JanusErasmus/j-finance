@@ -5,13 +5,14 @@ import os
 
 import jfin_data
 
-logging.basicConfig(level=logging.DEBUG)
-logger = logging
+logging.basicConfig(level=logging.WARNING)
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.WARNING)
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render('./www/index.html')
+        self.render('./www/index.html', categories=jfin_data.get_summary(2))
 
 class TransactionsHandler(tornado.web.RequestHandler):
     def get(self):
@@ -19,6 +20,13 @@ class TransactionsHandler(tornado.web.RequestHandler):
 
 class CategoriesHandler(tornado.web.RequestHandler):
     def get(self):
+        self.render('./www/categories.html', categories=jfin_data.get_categories())
+
+    def post(self):
+        a = self.get_body_argument("category_edit")
+        print(f"POST: {a}")
+        jfin_data.add_category(a)
+        logger.debug(f"Added: {a}")
         self.render('./www/categories.html', categories=jfin_data.get_categories())
 
 class CityHandler(tornado.web.RequestHandler):

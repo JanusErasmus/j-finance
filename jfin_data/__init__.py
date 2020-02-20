@@ -4,7 +4,9 @@ import pprint
 import sys
 
 pp = pprint.PrettyPrinter(indent=2)
-logger = logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
 conn = sqlite3.connect('./jfin_data/jfin.db')
 
 class Transaction:
@@ -17,18 +19,37 @@ class Transaction:
     def __repr__(self):
         return str(self.__dict__)
 
-def get_categories():
+class Category:
+    def __init__(self, id, name, sum):
+        self.id = id
+        self.name = name
+        self.sum = sum
+        
+    def __repr__(self):
+        return str(self.__dict__)
+
+def get_categories(obj=False):
     categories = []
-    cursor = conn.execute("SELECT category FROM categories")
 
-    for row in cursor:
-        for cat in row:
-            categories.append(cat)
+    if obj:
+        cursor = conn.execute("SELECT id, category FROM categories")
+        for row in cursor:
+            # entry = {}
+            # entry['id'] = row[0]
+            # entry['name'] = row[1]
+            # categories.append(entry)
+            categories.append(Category(row[0], row[1], 0))
+    else:
+        cursor = conn.execute("SELECT category FROM categories")
+        for row in cursor:
+            categories.append(row[0])
 
-
-    logger.debug(f"{categories}")
-                
     return categories
+
+def add_category(category):
+    cursor = conn.execute(f"INSERT INTO categories (category) values(\'{category}\')")
+    pp.pprint(cursor)
+    conn.commit()
 
 def get_transactions(user_id):
     transactions = []
@@ -40,5 +61,28 @@ def get_transactions(user_id):
         t = Transaction(row[0], row[1], row[2], row[3])
         transactions.append(t)
 
-                
     return transactions
+
+def get_summary(user_id):
+    logger.debug("Get summary")
+    summary = []
+    cat_objs = get_categories(obj=True)
+
+    for cat in cat_objs:
+        # pp.pprint(id)
+        name = [c.name for c in cat_objs if c.id == cat.id][0]
+    
+        cursor = conn.execute(f"select sum(amount) from transactions "
+                f"left join users, categories on transactions.user_id = users.id and "
+                f"categories.id = transactions.cat_id where users.id={user_id} and transactions.cat_id={cat.id}")
+
+        for row in cursor:
+            if row[0] is not None:
+                # pp.pprint(row[0])
+                t = Category(-1, name, row[0])
+            else:
+                t = Category(-1, name, 0)
+            summary.append(t)
+
+    # pp.pprint(summary)
+    return summary

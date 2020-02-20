@@ -5,5 +5,16 @@
 {% end %}
 
 {% block article %}
-	Index Empty Body
+	<table>
+	<tr>
+	<th>Category</th>
+	<th>Amount</th>
+	</tr>
+	{% set total = 0 %}
+	{%for cat in categories%}	
+		<tr><td>{{cat.name}}</td><td>{{cat.sum}}</td></tr>
+		{% set total = total + cat.sum %}
+	{% end %}
+	<tr style="background-color:#555"><td><b>TOTAL</b></td><td><b>{{total}}</b></td></tr>
+	</table>
 {% end %}
