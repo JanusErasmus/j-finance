@@ -2,9 +2,12 @@
 import tornado.web
 import logging
 import os
+import ast 
+import pprint
 
 import jfin_data
 
+pp = pprint.PrettyPrinter(indent=2)
 logging.basicConfig(level=logging.DEBUG)
 
 logger = logging.getLogger(__name__)
@@ -28,7 +31,7 @@ class CategoriesHandler(tornado.web.RequestHandler):
     def post(self):
         a = self.get_body_argument("category_edit")
         print(f"POST: {a}")
-        jfin_data.add_category(a)
+        jfin_data.add_category(1, a)
         logger.debug(f"Added: {a}")
         self.render('./www/categories.html', categories=jfin_data.get_categories())
 
@@ -63,17 +66,12 @@ class BudgetHandler(tornado.web.RequestHandler):
         self.render('./www/budget.html', budget=jfin_data.get_budget(1))
 
     def post(self):
-        idx = 1
-        while True:
-            category = "cat_" + str(idx)
-            amount = self.get_body_argument(category, default=None)
-            if amount is None:
-                break
-
-            # logger.debug(f"POST: {amount}")
-            logger.debug(f"Update {category}: {amount}")
-            jfin_data.update_category(1, idx, amount);
-            idx += 1
+        arg_dict = self.request.arguments
+        
+        for category in self.request.arguments:
+            index = category.split("_")[1]
+            amount = float(arg_dict[category][0].decode('utf-8'))
+            jfin_data.update_category(1, index, amount)
 
         self.render('./www/budget.html', budget=jfin_data.get_budget(1))
 

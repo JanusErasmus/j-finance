@@ -80,7 +80,7 @@ footer {
 table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
-  width: 50%;
+  /* width: 50%; */
 }
 
 td, th {
@@ -100,7 +100,7 @@ tr:nth-child(even) {
     flex-direction: column;
   }
 
-  table {
-    width: 100%
-  }
+  /* table {
+    width: 80%
+  } */
 }

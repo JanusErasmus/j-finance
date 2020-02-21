@@ -11,24 +11,24 @@
 {% block article %}
 <form method="POST">
 	<table id="budget">
-		<col width="80%">
-		<col width="20%">
 		<tr>
 			<th>Category</th>
 			<th>Amount</th>
 		</tr>
-		{%for cat in budget%}	
+		{% set index = 0 %}
+		{%for cat in budget%}
 			<tr>
 				<td>{{cat.name}}</td>
 				<td>
-					<input type="text" id="cat_{{cat.id}}"  name="cat_{{cat.id}}" onchange="calc_sum()" value="{{cat.sum}}">
+					<input autocomplete="off" style="width: 6em" type="number" id="cat_{{index}}"  name="cat_{{cat.id}}" onchange="value_change()" value="{{cat.sum}}">
 				</td>
 			</tr>
+		{% set index = index + 1 %}
 		{% end %}
 			<tr style="background-color:#555">
-				<td><b>TOTAL</b></td><td id="total"><b>Browser fill total</b></td>
+				<td><b>TOTAL</b></td><td id="total"><b>Calculating...</b></td>
 			</tr>
 		</table>
-	<input syle="width: 20px" type="submit" value="Update">
+	<input id="add_btn" style="width: 6em" type="submit" value="Update" disabled>
 </form>
 {% end %}
