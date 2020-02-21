@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block scripts %}
+<script src="./budget.js"></script>
+{% end %}
+
+{% block header %}
+	Budget
+{% end %}
+
+{% block article %}
+	<table>
+		<col width="80%">
+		<col width="20%">
+		<tr>
+		<th>Category</th>
+		<th>Amount</th>
+		</tr>
+		{%for cat in budget%}	
+			<tr><td>{{cat.name}}</td><td>{{cat.sum}}</td></tr>
+		{% end %}
+		<tr style="background-color:#555"><td><b>TOTAL</b></td><td id="total" onclick="fill_it()"><b>Browser fill total</b></td></tr>
+	</table>
+{% end %}

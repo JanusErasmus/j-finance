@@ -4,7 +4,8 @@
 <head>
 	<meta charset="UTF-8">
 	<title>JFinance</title>
-	<script src="./nav.js"></script>
+	{% block scripts %}
+	{% end %}
 	<link rel="stylesheet" href="./base.css" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="icon" type="image/ico" href="./jfinicon.ico" />
@@ -26,6 +27,7 @@
     {% block nav %}
 		<a href="/categories">Categories</a>
 		<a href="/transactions">Transactions</a>
+		<a href="/budget">Budget</a>
       	<a href="/cities">Cities</a>
 	{% end %}
   </nav>

@@ -10,13 +10,16 @@ logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
 
+
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
         self.render('./www/index.html', categories=jfin_data.get_summary(2))
 
+
 class TransactionsHandler(tornado.web.RequestHandler):
     def get(self):
         self.render('./www/transactions.html', transactions=jfin_data.get_transactions(1))
+
 
 class CategoriesHandler(tornado.web.RequestHandler):
     def get(self):
@@ -28,6 +31,7 @@ class CategoriesHandler(tornado.web.RequestHandler):
         jfin_data.add_category(a)
         logger.debug(f"Added: {a}")
         self.render('./www/categories.html', categories=jfin_data.get_categories())
+
 
 class CityHandler(tornado.web.RequestHandler):
     _cities = [{'name': "Hendrina",
@@ -54,6 +58,11 @@ class CityHandler(tornado.web.RequestHandler):
         self.render('./www/cities.html', cities=self._cities)
 
 
+class BudgetHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render('./www/budget.html', budget=jfin_data.get_budget(1))
+
+
 def main():
     port = 8080
     logger.debug("Hello")
@@ -77,6 +86,7 @@ def main():
             tornado.web.url(r"/", MainHandler, name="index"),
             tornado.web.url(r"/transactions", TransactionsHandler, name="trans"),
             tornado.web.url(r"/categories", CategoriesHandler, name="cats"),
+            tornado.web.url(r"/budget", BudgetHandler, name="bud"),
             tornado.web.url(r"/cities", CityHandler, name="city"),
 
             (r"/(.*\.ico)",  tornado.web.StaticFileHandler, {"path": loc}),      # allow all .ico files (for favicon)

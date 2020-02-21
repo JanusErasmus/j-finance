@@ -72,17 +72,29 @@ def get_summary(user_id):
         # pp.pprint(id)
         name = [c.name for c in cat_objs if c.id == cat.id][0]
     
-        cursor = conn.execute(f"select sum(amount) from transactions "
-                f"left join users, categories on transactions.user_id = users.id and "
-                f"categories.id = transactions.cat_id where users.id={user_id} and transactions.cat_id={cat.id}")
+        cursor = conn.execute(f"select cat_id, category, sum(amount) from transactions "
+                f"left join categories on "
+                f"categories.id = transactions.cat_id where user_id={user_id} and transactions.cat_id={cat.id}")
 
         for row in cursor:
             if row[0] is not None:
                 # pp.pprint(row[0])
-                t = Category(-1, name, row[0])
+                c = Category(row[0], row[1], row[2])
             else:
-                t = Category(-1, name, 0)
-            summary.append(t)
+                c = Category(-1, name, 0)
+            summary.append(c)
 
     # pp.pprint(summary)
     return summary
+
+
+def get_budget(user_id):
+    budget = []
+    cursor = conn.execute(f"select cat_id, category, amount from budget left join categories on categories.id = budget.cat_id where user_id={user_id}")
+    for row in cursor:
+        if row[0] is not None:
+            # pp.pprint(row[0])
+            c = Category(row[0], row[1], row[2])
+            budget.append(c)
+    
+    return budget

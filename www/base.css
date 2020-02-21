@@ -2,94 +2,85 @@
     box-sizing: border-box;
   }
   
-  body {
-    font-family: Arial, Helvetica, sans-serif;
-  }
-  
-  /* Style the header */
-  header {
-    background-color: #666;
-    padding: 10px;
-    text-align: left;
-    font-size: 35px;
-    height: 70px;
-    line-height: 50px;
-    color: white;
-  }
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
 
-  header img {      
-    float: left;
-    width: auto;
-    height: 100%;
-    position: relative;
-    margin-right: 20px;
-  }
-  
-  /* Container for flexboxes */
-  section {
-    display: -webkit-flex;
-    display: flex;
-  }
+/* Style the header */
+header {
+  background-color: #666;
+  padding: 10px;
+  text-align: left;
+  font-size: 35px;
+  height: 70px;
+  line-height: 50px;
+  color: white;
+}
 
-  section a {
-    margin-top: 10px;
-    text-decoration: none;
-    padding: 10px;
-    color: black;
-    background: gray;
-    box-sizing: initial;
-    text-align: center;
-    display: block;
-  }
-  section a:hover {
-    background: lightgray;
-  }
-  /* Style the navigation menu */
-  nav {
-    -webkit-flex: 1;
-    -ms-flex: 1;
-    flex: 1;
-    background-color: #ccc;
-    padding: 20px;
-  }
-  
-  /* Style the list inside the menu */
-  nav ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  /* Style the content */
-  article {
-    -webkit-flex: 3;
-    -ms-flex: 3;
-    flex: 3;
-    background-color: #f1f1f1;
-    padding: 10px;
-  }
-  
-  /* Style the footer */
-  footer {
-    background-color: #777;
-    padding: 5px;
-    text-align: center;
-    color: white;
-  }
-  
-  /* Responsive layout - makes the menu and the content (inside the section) sit on top of each other instead of next to each other */
-  @media (max-width: 600px) {
-    section {
-      -webkit-flex-direction: column;
-      flex-direction: column;
-    }
-  }
+header img {      
+  float: left;
+  width: auto;
+  height: 100%;
+  position: relative;
+  margin-right: 20px;
+}
 
-  
+/* Container for flexboxes */
+section {
+  display: -webkit-flex;
+  display: flex;
+}
+
+section a {
+  margin-top: 10px;
+  text-decoration: none;
+  padding: 10px;
+  color: black;
+  background: gray;
+  box-sizing: initial;
+  text-align: center;
+  display: block;
+}
+section a:hover {
+  background: lightgray;
+}
+/* Style the navigation menu */
+nav {
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  background-color: #ccc;
+  padding: 20px;
+}
+
+/* Style the list inside the menu */
+nav ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+/* Style the content */
+article {
+  -webkit-flex: 3;
+  -ms-flex: 3;
+  flex: 3;
+  background-color: #f1f1f1;
+  padding: 10px;
+}
+
+/* Style the footer */
+footer {
+  background-color: #777;
+  padding: 5px;
+  text-align: center;
+  color: white;
+}
+
 /* Table styles */
 table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
-  width: 100%;
+  width: 50%;
 }
 
 td, th {
@@ -100,4 +91,16 @@ td, th {
 
 tr:nth-child(even) {
   background-color: #dddddd;
+}
+
+/* Responsive layout - makes the menu and the content (inside the section) sit on top of each other instead of next to each other */
+@media (max-width: 600px) {
+  section {
+    -webkit-flex-direction: column;
+    flex-direction: column;
+  }
+
+  table {
+    width: 100%
+  }
 }
