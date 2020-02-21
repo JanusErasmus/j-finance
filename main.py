@@ -5,15 +5,15 @@ import os
 
 import jfin_data
 
-logging.basicConfig(level=logging.WARNING)
+logging.basicConfig(level=logging.DEBUG)
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.WARNING)
+logger.setLevel(logging.DEBUG)
 
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render('./www/index.html', categories=jfin_data.get_summary(2))
+        self.render('./www/index.html', categories=jfin_data.get_summary(1))
 
 
 class TransactionsHandler(tornado.web.RequestHandler):
@@ -62,6 +62,20 @@ class BudgetHandler(tornado.web.RequestHandler):
     def get(self):
         self.render('./www/budget.html', budget=jfin_data.get_budget(1))
 
+    def post(self):
+        idx = 1
+        while True:
+            category = "cat_" + str(idx)
+            amount = self.get_body_argument(category, default=None)
+            if amount is None:
+                break
+
+            # logger.debug(f"POST: {amount}")
+            logger.debug(f"Update {category}: {amount}")
+            jfin_data.update_category(1, idx, amount);
+            idx += 1
+
+        self.render('./www/budget.html', budget=jfin_data.get_budget(1))
 
 def main():
     port = 8080
@@ -90,13 +104,13 @@ def main():
             tornado.web.url(r"/cities", CityHandler, name="city"),
 
             (r"/(.*\.ico)",  tornado.web.StaticFileHandler, {"path": loc}),      # allow all .ico files (for favicon)
-            (r"/(.*\.js)",   tornado.web.StaticFileHandler, {"path": loc}),       # allow all javascript files
+            (r"/(.*\.js)",   tornado.web.StaticFileHandler, {"path": loc}),      # allow all javascript files
             (r"/(.*\.css)",  tornado.web.StaticFileHandler, {"path": loc}),      # allow all stylesheets
             (r"/(.*\.png)",  tornado.web.StaticFileHandler, {"path": loc}),      # allow all png files
             (r"/(.*\.gif)",  tornado.web.StaticFileHandler, {"path": loc}),      # allow all gif files
             (r"/(.*\.jpg)",  tornado.web.StaticFileHandler, {"path": loc}),      # allow all jpegs
             (r"/(.*\.pdf)",  tornado.web.StaticFileHandler, {"path": loc}),      # allow pdf files (user manual)
-            (r"/(.*\.html)", tornado.web.StaticFileHandler, {"path": loc})      # allow all html files
+            (r"/(.*\.html)", tornado.web.StaticFileHandler, {"path": loc})       # allow all html files
         ], **settings
     )
     httpServer = tornado.httpserver.HTTPServer(app)

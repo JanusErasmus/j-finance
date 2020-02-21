@@ -98,3 +98,12 @@ def get_budget(user_id):
             budget.append(c)
     
     return budget
+
+def add_budget(user_id, category, amount):
+    cursor = conn.execute(f"INSERT INTO categories (category) values(\'{category}\')")
+    pp.pprint(cursor)
+    conn.commit()
+
+def update_category(user_id, category_index, amount):
+    cursor = conn.execute(f"UPDATE budget SET amount={amount} WHERE user_id={user_id} and cat_id={category_index}")
+    conn.commit()
