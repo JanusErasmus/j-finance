@@ -1,22 +1,25 @@
 {% extends "base.html" %}
 
+{% block scripts %}
+<script src="./index.js"></script>
+{% end %}
+
 {% block header %}
 	J Finance
 {% end %}
 
 {% block article %}
-	<table>
+	<table id="budget">
 		<col width="80%">
 		<col width="20%">
 		<tr>
 			<th>Category</th>
 			<th>Amount</th>
 		</tr>
-		{% set total = 0 %}
+		{% set index = 0 %}
 		{%for cat in categories%}	
-			<tr><td>{{cat.name}}</td><td>{{cat.sum}}</td></tr>
-			{% set total = total + cat.sum %}
+			<tr id="cat_{{index}}"><td>{{cat.name}}</td><td id="value_{{index}}">{{cat.sum}}</td id="cat_{{index}}"></tr>
+			{% set index = index + 1 %}
 		{% end %}
-		<tr style="background-color:#555"><td><b>TOTAL</b></td><td><b>{{total}}</b></td></tr>
 	</table>
 {% end %}

@@ -6,7 +6,7 @@ function calc_sum() {
         cat = document.getElementById("cat_" + k)
         if(cat != null)
         {
-            console.log("Adding: " + cat.value)
+            // console.log("Adding: " + cat.value)
             sum += parseFloat(cat.value);
         }
     }
