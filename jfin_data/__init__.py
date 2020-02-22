@@ -123,3 +123,8 @@ def get_summary(user_id):
         
     return summary
 
+
+def add_transaction(user_id, category_id, description, amount):    
+    cursor = conn.execute(f"INSERT INTO transactions (user_id, cat_id, desc, amount) values({user_id},\'{category_id}\', \'{description}\', {amount})")
+    # pp.pprint(cursor)
+    conn.commit()

@@ -9,6 +9,7 @@
 {% end %}
 
 {% block article %}
+{% set total = 0 %}
 	<table id="budget">
 		<col width="80%">
 		<col width="20%">
@@ -20,6 +21,12 @@
 		{%for cat in categories%}	
 			<tr id="cat_{{index}}"><td>{{cat.name}}</td><td id="value_{{index}}">{{cat.sum}}</td id="cat_{{index}}"></tr>
 			{% set index = index + 1 %}
+			{% set total = total + cat.sum %}
 		{% end %}
+		<tr><td> </td><td> </td></tr>
+		<tr>
+			<td><b>Total</b></td>
+			<td>{{ total }}</td>
+		</tr>
 	</table>
 {% end %}
