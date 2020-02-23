@@ -53,11 +53,11 @@ def update_category(user_id, category_index, amount):
     conn.commit()
 
 
-def get_categories(obj=False):
+def get_categories(user_id, obj=False):
     categories = []
 
     if obj:
-        cursor = conn.execute("SELECT id, category FROM categories")
+        cursor = conn.execute(f"SELECT id, category FROM categories where user_id={user_id}")
         for row in cursor:
             # entry = {}
             # entry['id'] = row[0]
@@ -65,7 +65,7 @@ def get_categories(obj=False):
             # categories.append(entry)
             categories.append(Category(row[0], row[1], 0))
     else:
-        cursor = conn.execute("SELECT category FROM categories")
+        cursor = conn.execute(f"SELECT category FROM categories where user_id={user_id}")
         for row in cursor:
             categories.append(row[0])
 
@@ -73,7 +73,7 @@ def get_categories(obj=False):
 
 def add_category(user_id, category):
     conn.execute(f"INSERT INTO categories (user_id, category) values({user_id}, \'{category}\')")
-    cursor = conn.execute(f"select id from categories where category=\'{category}\'") #SELECT id from categories where category={category}")
+    cursor = conn.execute(f"select id from categories where category=\'{category}\' and user_id={user_id}") #SELECT id from categories where category={category}")
     conn.commit()
     for row in cursor:
         logger.debug(row[0])
@@ -96,11 +96,9 @@ def get_summary(user_id):
     summary = []
     budget = get_budget(user_id)
     # pp.pprint(budget)
-    cat_objs = get_categories(obj=True)
+    cat_objs = get_categories(user_id, obj=True)
 
-    for cat in cat_objs:
-        name = [c.name for c in cat_objs if c.id == cat.id][0]
-    
+    for cat in cat_objs:           
         cursor = conn.execute(f"select cat_id, category, sum(amount) from transactions "
                 f"left join categories on "
                 f"categories.id = transactions.cat_id where transactions.user_id={user_id} and transactions.cat_id={cat.id} "
@@ -109,18 +107,26 @@ def get_summary(user_id):
         for row in cursor:
             if row[0] is not None:
                 # pp.pprint(row[0])
-
                 c = Category(row[0], row[1], row[2])
             else:
-                c = Category(cat.id, name, 0)
+                c = Category(cat.id, cat.name, 0)
             summary.append(c)
 
-    # pp.pprint(summary)
+    # pp.pprint(budget)
     for cat in summary:
-        available = [c.sum for c in budget if c.id == cat.id][0]
+        available = 0
+        if len(budget) > 0:
+            for c in budget:
+                # logger.debug(f"try: {c.name}  {c.id} == {cat.id}")
+                if c.id == cat.id:
+                    available = c.sum
+                    # logger.debug(f"Use: {cat.name}: {available}")
+                    break
+                
         cat.sum = available - cat.sum
-        # logger.debug(f"Available for {cat.id}: {available}")
-        
+        # logger.debug(f"Available for {cat.id}: {cat.sum}")
+
+    # pp.pprint(summary)
     return summary
 
 

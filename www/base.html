@@ -25,11 +25,13 @@
 <section>
   <nav>
     {% block nav %}
+		<a href="/">Summary</a>
 		<a href="/add">Add</a>
 		<a href="/categories">Categories</a>
 		<a href="/transactions">Transactions</a>
 		<a href="/budget">Budget</a>
       	<a href="/cities">Cities</a>
+      	<a href="/logout">Log Out</a>
 	{% end %}
   </nav>
   
@@ -41,7 +43,7 @@
 </section>
 
 <footer>
-  <p>J Finance web - 0.0.0</p>
+  <p>{{ username }} - J Finance web - 0.0.0</p>
 </footer>
 
 
