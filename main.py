@@ -13,7 +13,6 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-user_id = 1
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
@@ -30,7 +29,6 @@ class LoginHandler(BaseHandler):
 
     @tornado.gen.coroutine
     def post(self):
-        global user_id
         incorrect = self.get_secure_cookie("incorrect")
         if incorrect and int(incorrect) > 20:
             self.write('<center>blocked</center>')
@@ -41,12 +39,14 @@ class LoginHandler(BaseHandler):
         if "janus" == getusername and "j$anus2564" == getpassword:
             user_id = 1
             self.set_secure_cookie("user", self.get_argument("username"))
-            self.set_secure_cookie("incorrect", "0")                        
+            self.set_secure_cookie("incorrect", "0")         
+            self.set_secure_cookie("user_id", str(user_id))
             self.redirect(self.get_argument("next", self.reverse_url("index"))) # self.redirect("/")
         elif "herman" == getusername and "h$erman" == getpassword:
             user_id = 2
             self.set_secure_cookie("user", self.get_argument("username"))
             self.set_secure_cookie("incorrect", "0")
+            self.set_secure_cookie("user_id", str(user_id))
             self.redirect("/")
         else:
             incorrect = self.get_secure_cookie("incorrect") or 0
@@ -67,16 +67,20 @@ class LogoutHandler(BaseHandler):
 class MainHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
+        user_id = int(self.get_secure_cookie("user_id"))
+        logger.debug(f"User: {user_id}")
         self.render('www/index.html', categories=jfin_data.get_summary(user_id))
 
 
 class AddHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
+        user_id = int(self.get_secure_cookie("user_id"))
         self.render('www/add.html', categories=jfin_data.get_categories(obj=True))
 
     @tornado.web.authenticated
     def post(self):
+        user_id = int(self.get_secure_cookie("user_id"))
         # logger.debug(self.request.arguments)
         cat_id = self.get_body_argument("category_id")
         desc = self.get_body_argument("description")
@@ -88,17 +92,19 @@ class AddHandler(BaseHandler):
 class TransactionsHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
+        user_id = int(self.get_secure_cookie("user_id"))
         self.render('www/transactions.html', transactions=jfin_data.get_transactions(user_id))
 
 
 class CategoriesHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
+        user_id = int(self.get_secure_cookie("user_id"))
         self.render('www/categories.html', categories=jfin_data.get_categories())
 
     @tornado.web.authenticated
     def post(self):
-        global user_id
+        user_id = int(self.get_secure_cookie("user_id"))
         a = self.get_body_argument("category_edit")
         print(f"POST: {a}")
         jfin_data.add_category(user_id, a)
@@ -128,6 +134,7 @@ class CityHandler(BaseHandler):
 
     @tornado.web.authenticated
     def get(self):
+        user_id = int(self.get_secure_cookie("user_id"))
         logger.debug(f"Init Cities")
         self.render('www/cities.html', cities=self._cities)
 
@@ -135,11 +142,12 @@ class CityHandler(BaseHandler):
 class BudgetHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
+        user_id = int(self.get_secure_cookie("user_id"))
         self.render('www/budget.html', budget=jfin_data.get_budget(user_id))
 
     @tornado.web.authenticated
     def post(self):
-        global user_id
+        user_id = int(self.get_secure_cookie("user_id"))
         arg_dict = self.request.arguments
         
         for category in self.request.arguments:
