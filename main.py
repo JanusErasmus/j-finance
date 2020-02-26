@@ -1,19 +1,24 @@
 #!python
 import tornado.web
 import logging
+import logging.config
 import os
 import ast 
 import pprint
+import signal
+import colorama
+import copy
 
 import jfin_data
 
 pp = pprint.PrettyPrinter(indent=2)
-logging.basicConfig(level=logging.DEBUG)
+
+logging.config.fileConfig('logging.ini')
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-
-
+logger.critical("hi")
+logger.error("hi")
+logger.warning("hi")
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
         return self.get_secure_cookie("user")
@@ -161,12 +166,31 @@ class BudgetHandler(BaseHandler):
 
         self.render('www/budget.html', username=self.get_secure_cookie("user"), budget=jfin_data.get_budget(user_id))
 
+
+def sig_keyboard_int(sig, frame):
+    logger.warning('Caught signal: %s', sig)
+    tornado.ioloop.IOLoop.instance().add_callback_from_signal(shutdown)
+
+
+def shutdown():
+    global httpServer
+    logger.warning('shutting down')
+    
+    if httpServer is not None:
+        logger.warning('Stopping http server')
+        httpServer.stop()
+    else:
+        logger.error('http server None')
+
+    tornado.ioloop.IOLoop.instance().stop()
+
+
 def main():
     port = 8080
     logger.debug("Hello")
     
     global httpServer
-    loc = os.path.dirname(os.path.realpath(__file__)) + "/www/"   # get the pull path of where we are
+    loc = os.path.dirname(os.path.realpath(__file__)) + "/www/"   # get the full path of where we are
 
     settings = {
         'cookie_secret': 'bZJc2sWbQLKos6GkHn/VB9oXwQt8S0R0kRvJ5/xJ89E=',
@@ -208,4 +232,6 @@ def main():
 
 
 if __name__ == "__main__":
+    signal.signal(signal.SIGINT, sig_keyboard_int)       # create callback to capture keyboard interrupt
     main()
+    logger.info("DONE")

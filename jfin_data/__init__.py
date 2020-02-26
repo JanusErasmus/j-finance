@@ -5,7 +5,6 @@ import sys
 
 pp = pprint.PrettyPrinter(indent=2)
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 conn = sqlite3.connect('./jfin_data/jfin.db')
 
