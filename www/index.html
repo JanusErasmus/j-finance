@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block body %}
+<body onload="build_table({{categories}})">
+{% end %}
+
 {% block scripts %}
 <script src="./index.js"></script>
 {% end %}

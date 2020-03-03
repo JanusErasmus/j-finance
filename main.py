@@ -9,16 +9,18 @@ import signal
 import colorama
 import copy
 
-import jfin_data
+logging.config.fileConfig('logging.ini')
 
+import test
+import jfin_data
 pp = pprint.PrettyPrinter(indent=2)
 
-logging.config.fileConfig('logging.ini')
 
 logger = logging.getLogger(__name__)
 logger.critical("hi")
 logger.error("hi")
 logger.warning("hi")
+
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
         return self.get_secure_cookie("user")
@@ -78,7 +80,7 @@ class MainHandler(BaseHandler):
     def get(self):
         user_id = int(self.get_secure_cookie("user_id"))
         # logger.debug(f"User: {user_id}")
-        self.render('www/index.html', username=self.get_secure_cookie("user"), categories=jfin_data.get_summary(user_id))
+        self.render('www/index.html', username=self.get_secure_cookie("user"), categories=jfin_data.get_summary(user_id), text="koolkop")
 
 
 class AddHandler(BaseHandler):
@@ -234,4 +236,5 @@ def main():
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, sig_keyboard_int)       # create callback to capture keyboard interrupt
     main()
+    # jfin_data.get_summary(1)
     logger.info("DONE")

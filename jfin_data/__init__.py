@@ -124,9 +124,44 @@ def get_summary(user_id):
                 
         cat.sum = available - cat.sum
         # logger.debug(f"Available for {cat.id}: {cat.sum}")
-
     # pp.pprint(summary)
-    return summary
+
+
+    # Use python dictionary key to group sub-categories
+    summary_dict = {}
+    for cat in summary:
+        lst = cat.name.split("_")
+        if len(lst) > 1:
+            # Check if key for main category was created
+            if lst[0] in summary_dict:
+                cat.name = lst[1]
+                summary_dict[lst[0]].append(cat)
+            else:
+                summary_dict[lst[0]] = []
+                cat.name = lst[1]
+                summary_dict[lst[0]].append(cat)
+    # pp.pprint(summary_dict)
+
+    
+    # Create dictionary used by index.js
+    summary_js = []
+    for main in summary_dict:
+        total = 0
+        main_obj = {}
+        main_obj['name'] = main
+        summary_js.append(main_obj)
+        main_obj['cats'] = []
+        for sub in summary_dict[main]:
+            sub_obj = {}
+            sub_obj['name'] = sub.name
+            sub_obj['amount'] = sub.sum
+            total += sub.sum
+            main_obj['cats'].append(sub_obj)
+            # pp.pprint(sub_obj)
+
+        main_obj['amount'] = total
+    # pp.pprint(summary_js)
+    return summary_js
 
 
 def add_transaction(user_id, category_id, description, amount):    

@@ -28,8 +28,18 @@ function insert_row(tbdy, category) {
     var tr = document.createElement('tr');
     tr.style.backgroundColor = "white";
 
-    if( category['type'] == "subcat") {
-        //Insert category name
+    if( typeof category['cats'] === 'undefined') {
+        //insert only name and amount
+        var td = document.createElement('td');
+        td.appendChild(document.createTextNode(category['name']))
+        tr.appendChild(td)
+
+        td = document.createElement('td');
+        td.appendChild(document.createTextNode(category['amount']))
+        tr.appendChild(td)
+
+    }else {
+        //Insert category name, and table of sub categories
         var h_tr = get_row_element(category['name'], category['amount'])
         h_tr.style.backgroundColor = "lightgreen"
         h_tr.onclick = function() {
@@ -47,15 +57,6 @@ function insert_row(tbdy, category) {
         td.appendChild(sub_tbl)
         tr.id = category['name']
         tr.style.display = "none"
-        tr.appendChild(td)
-    } else {
-        //insert category and name
-        var td = document.createElement('td');
-        td.appendChild(document.createTextNode(category['name']))
-        tr.appendChild(td)
-
-        td = document.createElement('td');
-        td.appendChild(document.createTextNode(category['amount']))
         tr.appendChild(td)
     }
 
@@ -85,69 +86,7 @@ function insert_table(tbdy, categories)
     return tbdy
 }
 
-function build_table() {
-    
-    var table = []
-    table.push({'name': "Sakgeld", 'amount':"1234", 'type': "cat"})
-    table.push({'name': "Bier", 'amount':"14", 'type': "cat"})
-    table.push({'name': "Spaar", 'amount':"1234", 'type': "cat"})
-    table.push(
-        {
-        'name': "Noodsaaklik",
-        'amount': 235,
-        'type': "subcat",
-        'cats':[{'name': "Losies", 'amount': 4},
-                {'name': "Krag", 'amount': 5},
-                {'name': "Bediende", 'amount': 6}
-            ]
-        }
-    )
-    table.push({'name': "Medies", 'amount':"1234", 'type': "cat"})
-    table.push(
-        {
-        'name': "Voorsorg",
-        'amount': 1235,
-        'type': "subcat",
-        'cats':[{'name': "Profmed", 'amount': 405},
-                {'name': "PPS", 'amount': 5456},
-                {'name': "OUTsurance",
-                'amount': 601,
-                'type': "subcat",
-                'cats': [{'name': "Losies", 'amount': 4},
-                {'name': "Losies", 'amount': 4},
-                {'name': "Losies", 'amount': 4},
-                {'name': "Losies", 'amount': 4},
-                {'name': "Losies", 'amount': 4},
-                {'name': "Losies_weer", 'amount': 4, 'type': 'subcat',
-                'cats': [{
-                    'name': "Voorsorg_weer",
-                    'amount': 1235,
-                    'type': "subcat",
-                    'cats':[{'name': "Profmed", 'amount': 405},
-                            {'name': "PPS", 'amount': 5456},
-                            {'name': "OUTsurance_weer",
-                            'amount': 601,
-                            'type': "subcat",
-                            'cats': [{'name': "Losies", 'amount': 4},
-                            {'name': "Losies", 'amount': 4},
-                            {'name': "Losies", 'amount': 4},
-                            {'name': "Losies", 'amount': 4},
-                            {'name': "Losies", 'amount': 4},
-                            {'name': "Losies", 'amount': 4}
-                        ]
-                        }
-                        ]
-                    }]},
-                    {'name': "Losies", 'amount': 4},
-                    {'name': "Losies", 'amount': 4},
-                    {'name': "Losies", 'amount': 4}]
-                }
-            
-            
-            
-            ]
-        }
-    )
+function build_table(categories) {
     
     //create table of summary  
     var tbdy = document.createElement('tbody');
@@ -165,7 +104,7 @@ function build_table() {
     tbdy.appendChild(tr);
 
     //insert rows
-    insert_table(tbdy, table)
+    insert_table(tbdy, categories)
     
     var tbl = document.createElement('table');  
     tbl.appendChild(tbdy);
@@ -174,11 +113,3 @@ function build_table() {
     article.appendChild(tbl)
 }
 
-
-function update() {
-    var sum = 0;
-
-    build_table()
-}
-
-window.onload = update;
