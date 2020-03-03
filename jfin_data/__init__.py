@@ -93,10 +93,13 @@ def get_transactions(user_id):
 
 def get_summary(user_id):
     summary = []
+
+    # Get categories credit
     budget = get_budget(user_id)
     # pp.pprint(budget)
-    cat_objs = get_categories(user_id, obj=True)
 
+    # Query each categories transactions debit
+    cat_objs = get_categories(user_id, obj=True)
     for cat in cat_objs:           
         cursor = conn.execute(f"select cat_id, category, sum(amount) from transactions "
                 f"left join categories on "
@@ -111,7 +114,7 @@ def get_summary(user_id):
                 c = Category(cat.id, cat.name, 0)
             summary.append(c)
 
-    # pp.pprint(budget)
+    # Calculate available amount for each category, and store in sum of that category
     for cat in summary:
         available = 0
         if len(budget) > 0:
@@ -144,6 +147,8 @@ def get_summary(user_id):
 
     
     # Create dictionary used by index.js
+    # index.js use a list of category objects {'name': <>, 'amount': <>, 'cats':[<>,<>]},
+    # where cats is a list optional category objects which can again have cats
     summary_js = []
     for main in summary_dict:
         total = 0

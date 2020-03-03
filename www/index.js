@@ -16,14 +16,15 @@ function show_table(id) {
     var el = document.getElementById(id)
     
     if(el.style.display == "none") {
-        console.log("show")        
+        //console.log("show")        
         el.style.display = ""
     } else {
-        console.log("hide")        
+        //console.log("hide")        
         el.style.display = "none"
     }
 }
 
+// Insert a table row into tbdy, category is a object: {'name': <>, 'amount': <>, 'cats':[<>,<>]},
 function insert_row(tbdy, category) {
     var tr = document.createElement('tr');
     tr.style.backgroundColor = "white";
@@ -45,12 +46,12 @@ function insert_row(tbdy, category) {
         h_tr.onclick = function() {
             var cell = this.getElementsByTagName("td")[0]
             var id = cell.innerHTML
-            console.log("show " + id)
+            //console.log("show " + id)
             show_table(id)
         }
         tbdy.appendChild(h_tr);
         
-        //insert table of sub categories
+        //insert table of sub categories by creating a new table inside this row
         var sub_tbl = get_table(category['cats'])
         var td = document.createElement('td');
         td.colSpan = 2
@@ -63,6 +64,8 @@ function insert_row(tbdy, category) {
     tbdy.appendChild(tr);
 }
 
+// Returns a table element, categories is a list of category objects {'name': <>, 'amount': <>, 'cats':[<>,<>]},
+// where cats is a list of category objects
 function get_table(categories) {
     var tbl = document.createElement('table'); 
     var tbdy = document.createElement('tbody');
