@@ -6,20 +6,16 @@ import os
 import ast 
 import pprint
 import signal
-import colorama
 import copy
 
-logging.config.fileConfig('logging.ini')
+# logging.config.fileConfig('logging.ini')
+logging.basicConfig(level=logging.DEBUG)
 
-import test
 import jfin_data
 pp = pprint.PrettyPrinter(indent=2)
 
 
 logger = logging.getLogger(__name__)
-logger.critical("hi")
-logger.error("hi")
-logger.warning("hi")
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
@@ -111,17 +107,43 @@ class CategoriesHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         user_id = int(self.get_secure_cookie("user_id"))
-        self.render('www/categories.html', username=self.get_secure_cookie("user"), categories=jfin_data.get_categories(user_id))
+        self.render('www/categories.html',
+            username=self.get_secure_cookie("user"),
+            groups=jfin_data.get_groups(user_id),
+            categories=jfin_data.get_categories(user_id))
 
     @tornado.web.authenticated
     def post(self):
         user_id = int(self.get_secure_cookie("user_id"))
-        a = self.get_body_argument("category_edit")
-        print(f"POST: {a}")
-        jfin_data.add_category(user_id, a)
-        logger.debug(f"Added: {a}")
-        self.render('www/categories.html', username=self.get_secure_cookie("user"), categories=jfin_data.get_categories(user_id))
+        arg_dict = self.request.arguments
+        print(f"POST args: {arg_dict}")
+        key = list(arg_dict.keys())[0]
+        print(f"POST key: {key}")
 
+        if "add_group" in key:
+            group = str(arg_dict['add_group'][0], 'utf-8')
+            print(f"POST: Add G {group}")
+            jfin_data.add_group(user_id, group)
+
+        if "rm_group" in key:
+            group = key.split('_')[2]
+            print(f"POST: rm Group {group}")
+
+        if "rm_cat" in key:
+            cat = key.split('_')[2]
+            print(f"POST: rm Category {cat}")
+        
+        if "add_cat" in key:
+            group = str(arg_dict['add_cat_group'][0], 'utf-8')
+            name = str(arg_dict['add_cat_name'][0], 'utf-8')
+            print(f"POST: Add C {group}, {name}")
+            jfin_data.add_category(user_id, name, group_name=group)
+            # logger.debug(f"Added: {a}")
+
+        self.render('www/categories.html',
+            username=self.get_secure_cookie("user"),
+            groups=jfin_data.get_groups(user_id),
+            categories=jfin_data.get_categories(user_id))
 
 class CityHandler(BaseHandler):
     _cities = [{'name': "Hendrina",

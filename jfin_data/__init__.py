@@ -19,8 +19,9 @@ class Transaction:
         return str(self.__dict__)
 
 class Category:
-    def __init__(self, id, name, sum):
+    def __init__(self, id, group, name, sum):
         self.id = id
+        self.group = group
         self.name = name
         self.sum = sum
         
@@ -30,12 +31,12 @@ class Category:
 
 def get_budget(user_id):
     budget = []
-    cursor = conn.execute(f"select cat_id, category, amount from budget left join categories on categories.id = budget.cat_id where budget.user_id={user_id} "
+    cursor = conn.execute(f"select cat_id, group_id, category, amount from budget left join categories on categories.id = budget.cat_id where budget.user_id={user_id} "
                 f"order by cat_id ")
     for row in cursor:
         if row[0] is not None:
             # pp.pprint(row[0])
-            c = Category(row[0], row[1], row[2])
+            c = Category(row[0], row[1], row[2], row[3])
             budget.append(c)
     
     return budget
@@ -51,32 +52,71 @@ def update_category(user_id, category_index, amount):
     cursor = conn.execute(f"UPDATE budget SET amount={amount} WHERE user_id={user_id} and cat_id={category_index}")
     conn.commit()
 
+def get_groups(user_id, obj=False):
+    groups = []
+
+    if obj:
+        cursor = conn.execute(f"SELECT id, name FROM groups where user_id={user_id}")
+        for row in cursor:
+            entry = {}
+            entry['id'] = row[0]
+            entry['name'] = row[1]
+            groups.append(entry)
+    else:
+        cursor = conn.execute(f"SELECT id, name FROM groups where user_id={user_id}")
+        for row in cursor:
+            entry = {}
+            entry['id'] = row[0]
+            entry['name'] = row[1]
+            groups.append(entry)
+    return groups
 
 def get_categories(user_id, obj=False):
     categories = []
 
     if obj:
-        cursor = conn.execute(f"SELECT id, category FROM categories where user_id={user_id}")
+        cursor = conn.execute(f"SELECT id, group_id, category FROM categories where user_id={user_id}")
         for row in cursor:
             # entry = {}
             # entry['id'] = row[0]
             # entry['name'] = row[1]
             # categories.append(entry)
-            categories.append(Category(row[0], row[1], 0))
+            categories.append(Category(row[0], row[1], row[2], 0))
     else:
-        cursor = conn.execute(f"SELECT category FROM categories where user_id={user_id}")
+        cursor = conn.execute(f"SELECT categories.id, groups.name, category FROM categories left join groups on groups.id = group_id where categories.user_id={user_id}")
         for row in cursor:
-            categories.append(row[0])
+            entry = {}
+            entry['id'] = row[0]
+            entry['group'] = row[1]
+            entry['name'] = row[2]
+            categories.append(entry)
 
     return categories
 
-def add_category(user_id, category):
-    conn.execute(f"INSERT INTO categories (user_id, category) values({user_id}, \'{category}\')")
-    cursor = conn.execute(f"select id from categories where category=\'{category}\' and user_id={user_id}") #SELECT id from categories where category={category}")
-    conn.commit()
+def add_category(user_id, category, group_id=None, group_name=None):
+    if group_name is not None:
+        cursor = conn.execute(f"SELECT id FROM groups where user_id={user_id} and name=\'{group_name}\'")
+        for row in cursor:
+            group_id = row[0]
+            print(f"Goup ID is: {group_id}")
+
+    if group_id is not None:
+        conn.execute(f"INSERT INTO categories (user_id, group_id, category) values({user_id}, {group_id}, \'{category}\')")
+        cursor = conn.execute(f"select id from categories where category=\'{category}\' and user_id={user_id}") #SELECT id from categories where category={category}")
+        conn.commit()
+    else:    
+        conn.execute(f"INSERT INTO categories (user_id, category) values({user_id}, \'{category}\')")
+        cursor = conn.execute(f"select id from categories where category=\'{category}\' and user_id={user_id}") #SELECT id from categories where category={category}")
+        conn.commit()
+
     for row in cursor:
         logger.debug(row[0])
         add_budget(user_id, row[0], 0)
+
+def add_group(user_id, group):
+    conn.execute(f"INSERT INTO groups (user_id, name) values({user_id}, \'{group}\')")
+    conn.commit()
+    
 
 def get_transactions(user_id):
     transactions = []
@@ -101,7 +141,7 @@ def get_summary(user_id):
     # Query each categories transactions debit
     cat_objs = get_categories(user_id, obj=True)
     for cat in cat_objs:           
-        cursor = conn.execute(f"select cat_id, category, sum(amount) from transactions "
+        cursor = conn.execute(f"select cat_id, group_id, category, sum(amount) from transactions "
                 f"left join categories on "
                 f"categories.id = transactions.cat_id where transactions.user_id={user_id} and transactions.cat_id={cat.id} "
                 f"order by transactions.cat_id ")
@@ -109,9 +149,9 @@ def get_summary(user_id):
         for row in cursor:
             if row[0] is not None:
                 # pp.pprint(row[0])
-                c = Category(row[0], row[1], row[2])
+                c = Category(row[0], row[1], row[2], row[3])
             else:
-                c = Category(cat.id, cat.name, 0)
+                c = Category(cat.id, cat.group, cat.name, 0)
             summary.append(c)
 
     # Calculate available amount for each category, and store in sum of that category
