@@ -91,12 +91,13 @@ class AddHandler(BaseHandler):
     @tornado.web.authenticated
     def post(self):
         user_id = int(self.get_secure_cookie("user_id"))
-        # logger.debug(self.request.arguments)
-        cat_id = self.get_body_argument("category_id")
-        desc = self.get_body_argument("description")
+        # print(f"POST args: {self.request.arguments}")
+        group = self.get_body_argument("group")
+        category = self.get_body_argument("category")
+        # desc = self.get_body_argument("description")
         amount = self.get_body_argument("amount")
-        # logger.debug(f"Adding: {cat_id}, {desc}, {amount}")
-        jfin_data.add_transaction(user_id, cat_id, desc, amount)
+        # # logger.debug(f"Adding: {cat_id}, {desc}, {amount}")
+        jfin_data.add_transaction(user_id, group, category, " ", amount)
         self.render('www/index.html', username=self.get_secure_cookie("user"), categories=jfin_data.get_summary(user_id))
 
 class TransactionsHandler(BaseHandler):
