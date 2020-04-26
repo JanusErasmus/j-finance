@@ -80,7 +80,7 @@ def get_categories(user_id, obj=False):
     categories = []
 
     if obj:
-        cursor = conn.execute(f"SELECT id, group_id, category FROM categories where user_id={user_id} order by category")
+        cursor = conn.execute(f"SELECT categories.id, groups.name, category FROM categories left join groups on groups.id = group_id where categories.user_id={user_id} order by category")
         for row in cursor:
             # entry = {}
             # entry['id'] = row[0]
@@ -124,7 +124,6 @@ def add_group(user_id, group):
     
 
 def get_transactions(user_id):
-    transactions = []
     cursor = conn.execute(f"select categories.id, category, groups.name from categories "
             f"left join groups on categories.group_id = groups.id")
 
@@ -135,12 +134,12 @@ def get_transactions(user_id):
     # pp.pprint(cats)
 
     cursor = conn.execute(f"select date, cat_id, desc, amount from transactions "
-            f"left join users on transactions.user_id = users.id "
-            f"where users.id={user_id} "
+            f"where user_id={user_id} "
             f"order by date desc")
 
+    transactions = []
     for row in cursor:
-        # pp.pprint(row)
+        pp.pprint(row)
         group = cats[row[1]]['group']
         category = cats[row[1]]['name']
         t = Transaction(row[0][:10], group, category, row[2], row[3])
@@ -158,9 +157,9 @@ def get_summary(user_id):
     # Query each categories transactions debit
     cat_objs = get_categories(user_id, obj=True)
     for cat in cat_objs:           
-        cursor = conn.execute(f"select cat_id, group_id, category, sum(amount) from transactions "
-                f"left join categories on "
-                f"categories.id = transactions.cat_id where transactions.user_id={user_id} and transactions.cat_id={cat.id} "
+        cursor = conn.execute(f"select cat_id, groups.name, category, sum(amount) from transactions "
+                f"left join categories, groups on "
+                f"categories.id = transactions.cat_id and groups.id = categories.group_id where transactions.user_id={user_id} and transactions.cat_id={cat.id} "
                 f"order by transactions.cat_id ")
 
         for row in cursor:
@@ -186,44 +185,14 @@ def get_summary(user_id):
         # logger.debug(f"Available for {cat.id}: {cat.sum}")
     # pp.pprint(summary)
 
-
-    # Use python dictionary key to group sub-categories
-    summary_dict = {}
-    for cat in summary:
-        lst = cat.name.split("_")
-        if len(lst) > 1:
-            # Check if key for main category was created
-            if lst[0] in summary_dict:
-                cat.name = lst[1]
-                summary_dict[lst[0]].append(cat)
-            else:
-                summary_dict[lst[0]] = []
-                cat.name = lst[1]
-                summary_dict[lst[0]].append(cat)
-    # pp.pprint(summary_dict)
-
-    
-    # Create dictionary used by index.js
-    # index.js use a list of category objects {'name': <>, 'amount': <>, 'cats':[<>,<>]},
-    # where cats is a list optional category objects which can again have cats
-    summary_js = []
-    for main in summary_dict:
-        total = 0
-        main_obj = {}
-        main_obj['name'] = main
-        summary_js.append(main_obj)
-        main_obj['cats'] = []
-        for sub in summary_dict[main]:
-            sub_obj = {}
-            sub_obj['name'] = sub.name
-            sub_obj['amount'] = sub.sum
-            total += sub.sum
-            main_obj['cats'].append(sub_obj)
-            # pp.pprint(sub_obj)
-
-        main_obj['amount'] = total
+    # summary_js = {}
+    # for cat in summary:
+    #     if cat.group not in summary_js:
+    #         summary_js[cat.group] = []
+    #     summary_js[cat.group].append({'name': cat.name, 'amount': cat.sum})
     # pp.pprint(summary_js)
-    return summary_js
+    
+    return summary
 
 
 def add_transaction(user_id, group, category, description, amount):
