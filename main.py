@@ -7,6 +7,7 @@ import ast
 import pprint
 import signal
 import copy
+import json
 
 # logging.config.fileConfig('logging.ini')
 logging.basicConfig(level=logging.DEBUG)
@@ -76,14 +77,16 @@ class MainHandler(BaseHandler):
     def get(self):
         user_id = int(self.get_secure_cookie("user_id"))
         # logger.debug(f"User: {user_id}")
-        self.render('www/index.html', username=self.get_secure_cookie("user"), categories=jfin_data.get_summary(user_id), text="koolkop")
+        self.render('www/index.html', username=self.get_secure_cookie("user"), categories=jfin_data.get_summary(user_id))
 
 
 class AddHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         user_id = int(self.get_secure_cookie("user_id"))
-        self.render('www/add.html', username=self.get_secure_cookie("user"), categories=jfin_data.get_categories(user_id, obj=True))
+        groups = jfin_data.get_groups(user_id)
+        cats = jfin_data.get_categories(user_id)        
+        self.render('www/add.html', username=self.get_secure_cookie("user"), groups=json.dumps(groups), categories=json.dumps(cats))
 
     @tornado.web.authenticated
     def post(self):
@@ -167,7 +170,6 @@ class CityHandler(BaseHandler):
 
     @tornado.web.authenticated
     def get(self):
-        user_id = int(self.get_secure_cookie("user_id"))
         logger.debug(f"Init Cities")
         self.render('www/cities.html', username=self.get_secure_cookie("user"), cities=self._cities)
 

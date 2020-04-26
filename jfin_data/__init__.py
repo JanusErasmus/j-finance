@@ -9,8 +9,9 @@ logger = logging.getLogger(__name__)
 conn = sqlite3.connect('./jfin_data/jfin.db')
 
 class Transaction:
-    def __init__(self, date, category, description, amount):
+    def __init__(self, date, group, category, description, amount):
         self.date = date
+        self.group = group
         self.category = category
         self.description = description
         self.amount = amount
@@ -31,11 +32,15 @@ class Category:
 
 def get_budget(user_id):
     budget = []
-    cursor = conn.execute(f"select cat_id, group_id, category, amount from budget left join categories on categories.id = budget.cat_id where budget.user_id={user_id} "
-                f"order by cat_id ")
+    cursor = conn.execute(f"select cat_id, groups.name, category, amount from budget "
+                f"left join categories, groups "
+                f"on categories.id = budget.cat_id "
+                f"and categories.group_id = groups.id "
+                f"where budget.user_id={user_id} "
+                f"order by groups.name")
     for row in cursor:
         if row[0] is not None:
-            # pp.pprint(row[0])
+            # pp.pprint(row)
             c = Category(row[0], row[1], row[2], row[3])
             budget.append(c)
     
@@ -120,13 +125,25 @@ def add_group(user_id, group):
 
 def get_transactions(user_id):
     transactions = []
-    cursor = conn.execute(f"select date, category, desc, amount from transactions "
-            f"left join users, categories on transactions.user_id = users.id and "
-            f"categories.id = transactions.cat_id where users.id={user_id} "
+    cursor = conn.execute(f"select categories.id, category, groups.name from categories "
+            f"left join groups on categories.group_id = groups.id")
+
+    cats = {}
+    for row in cursor:
+        cats[row[0]] = {'name': row[1], 'group': row[2]}
+
+    # pp.pprint(cats)
+
+    cursor = conn.execute(f"select date, cat_id, desc, amount from transactions "
+            f"left join users on transactions.user_id = users.id "
+            f"where users.id={user_id} "
             f"order by date desc")
 
     for row in cursor:
-        t = Transaction(row[0], row[1], row[2], row[3])
+        # pp.pprint(row)
+        group = cats[row[1]]['group']
+        category = cats[row[1]]['name']
+        t = Transaction(row[0][:10], group, category, row[2], row[3])
         transactions.append(t)
 
     return transactions

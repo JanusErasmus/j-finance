@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
+{% block body %}
+<body onload="build_table({{groups}}, {{categories}})">
+{% end %}
+
 {% block scripts %}
-<script>
-function enable_btn() {    
-    document.getElementById('add_btn').disabled = false;
-}
-</script>
+<script src="./add.js"></script>
 {% end %}
 
 {% block header %}
@@ -13,35 +13,4 @@ function enable_btn() {
 {% end %}
 
 {% block article %}
-<form method="POST">
-	<table id="trans">
-		<tr>
-            <th></th>
-            <th>Transaction</th>
-        </tr>
-        <tr>
-            <td>Category</td>
-            <td>
-                <select id="cat" name="category_id"> 
-                    {%for cat in categories%}	
-                    <option value={{cat.id}}>{{cat.name}}</option>
-                    {% end %}
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>Description</td>
-            <td>
-                <input autocomplete="off" type="text" id="desc" name="description">
-            </td>
-        </tr>
-        <tr>            
-            <td>Amount</td>
-            <td>
-                <input autocomplete="off" type="number" id="amount" name="amount" onchange="enable_btn()">
-            </td>
-        </tr>
-    </table>
-	<input id="add_btn" style="width: 6em" type="submit" value="Add" disabled>
-</form>
 {% end %}

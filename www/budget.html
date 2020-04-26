@@ -12,12 +12,14 @@
 <form method="POST">
 	<table id="budget">
 		<tr>
+			<th>Group</th>
 			<th>Category</th>
 			<th>Amount</th>
 		</tr>
 		{% set index = 0 %}
 		{%for cat in budget%}
 			<tr>
+				<td>{{cat.group}}</td>
 				<td>{{cat.name}}</td>
 				<td>
 					<input autocomplete="off" style="width: 6em" type="number" id="cat_{{index}}"  name="cat_{{cat.id}}" onchange="value_change()" value="{{cat.sum}}">

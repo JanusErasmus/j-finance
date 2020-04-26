@@ -12,6 +12,7 @@
 	<table>
 	<tr>
 	<th>Date</th>
+	<th>Group</th>
 	<th>Category</th>
 	<th>Description</th>
 	<th>Amount</th>
@@ -19,6 +20,7 @@
 	{%for t in transactions%}
 	<tr>
 		<td>{{t.date}}</td>
+		<td>{{t.group}}</td>
 		<td>{{t.category}}</td>
 		<td>{{t.description}}</td>
 		<td>{{t.amount}}</td>
