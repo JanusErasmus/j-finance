@@ -6,6 +6,7 @@
 	<title>JFinance</title>
 	{% block scripts %}
 	{% end %}
+	<script src="./base.js"></script>
 	<link rel="stylesheet" href="./base.css" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="icon" type="image/ico" href="./jfinicon.ico" />
@@ -13,29 +14,29 @@
 	{% end %}
 </head>
 
-{% block body %}
 <body>
+{% block body %}
 {% end %}
 
 <header>
+	<div id="mySidenav" class="sidenav">
+	<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+	<a href="/">Summary</a>
+	<a href="/add">Add</a>
+	<a href="/transactions">Transactions</a>
+	<a href="/categories">Categories</a>
+	<a href="/budget">Budget</a>
+	<a href="/logout">Log out</a>
+	</div>
+<span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;</span>
+<span class="header_label">
   {% block header %}
   J Finance
   {% end %}
+</span>
 </header>
 
 <section>
-  <nav>
-    {% block nav %}
-		<a href="/">Summary</a>
-		<a href="/add">Add</a>
-		<a href="/categories">Categories</a>
-		<a href="/transactions">Transactions</a>
-		<a href="/budget">Budget</a>
-      	<a href="/cities">Cities</a>
-      	<a href="/logout">Log Out</a>
-	{% end %}
-  </nav>
-  
   <article>
     {% block article %}
 	Article
@@ -44,7 +45,7 @@
 </section>
 
 <footer>
-  <p>FredIO Simulator - 0.0.1</p>
+jFinance - 0.0.1
 </footer>
 
 

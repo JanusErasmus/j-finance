@@ -1,4 +1,3 @@
-#!python
 import tornado.web
 import logging
 import logging.config
@@ -6,7 +5,6 @@ import os
 import ast 
 import pprint
 import signal
-import copy
 import json
 
 # logging.config.fileConfig('logging.ini')
@@ -18,9 +16,11 @@ pp = pprint.PrettyPrinter(indent=2)
 
 logger = logging.getLogger(__name__)
 
+
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
         return self.get_secure_cookie("user")
+
 
 class LoginHandler(BaseHandler):
     def get(self):
@@ -100,6 +100,7 @@ class AddHandler(BaseHandler):
         jfin_data.add_transaction(user_id, group, category, " ", amount)
         self.render('www/index.html', username=self.get_secure_cookie("user"), categories=jfin_data.get_summary(user_id))
 
+
 class TransactionsHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
@@ -148,31 +149,6 @@ class CategoriesHandler(BaseHandler):
             username=self.get_secure_cookie("user"),
             groups=jfin_data.get_groups(user_id),
             categories=jfin_data.get_categories(user_id))
-
-class CityHandler(BaseHandler):
-    _cities = [{'name': "Hendrina",
-                'description': "Groot deel van Laerskool"
-                },
-               {'name': "Pretoria",
-                'description': "Universiteit en werk"
-                },
-               {'name': "Johannesburg",
-                'description': "Nee, nee. Wil nie soontoe gaan nie"
-                },
-               {'name': "Middelburg",
-                'description': "Lekker koshuis lewe"
-                },
-               {'name': "Silverton",
-                'description': "Dreimans bier is hier"
-                },
-               {'name': "Rietfontein",
-                'description': "Ek bly nou hier"
-                }]
-
-    @tornado.web.authenticated
-    def get(self):
-        logger.debug(f"Init Cities")
-        self.render('www/cities.html', username=self.get_secure_cookie("user"), cities=self._cities)
 
 
 class BudgetHandler(BaseHandler):
@@ -239,7 +215,6 @@ def main():
             tornado.web.url(r"/transactions", TransactionsHandler, name="trans"),
             tornado.web.url(r"/categories", CategoriesHandler, name="cats"),
             tornado.web.url(r"/budget", BudgetHandler, name="bud"),
-            tornado.web.url(r"/cities", CityHandler, name="city"),
 
             (r"/(.*\.ico)",  tornado.web.StaticFileHandler, {"path": loc}),      # allow all .ico files (for favicon)
             (r"/(.*\.js)",   tornado.web.StaticFileHandler, {"path": loc}),      # allow all javascript files

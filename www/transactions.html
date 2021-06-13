@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block header %}
-		Transactions
+		jFinance - Transactions
 {% end %}
 
 {% block styles %}
@@ -9,22 +9,14 @@
 
 <!-- Needs a list of city objects  -->
 {% block article %}
-	<table>
-	<tr>
-	<th>Date</th>
-	<th>Group</th>
-	<th>Category</th>
-	<th>Description</th>
-	<th>Amount</th>
-	</tr>
-	{%for t in transactions%}
-	<tr>
-		<td>{{t.date}}</td>
-		<td>{{t.group}}</td>
-		<td>{{t.category}}</td>
-		<td>{{t.description}}</td>
-		<td>{{t.amount}}</td>
-	</tr>
-	{% end %}
-	</table>
+	<div class="items_heading">
+		<div>Category</div><div>Description</div><div>Amount</div>
+	</div>
+<div class="items">
+{% for i in range(1, 100)%}
+	<div class="item_row">
+		<div>Sakgeld</div><div>Bier</div><div>R45.00</div>
+	</div>
+{% end %}
+</div>
 {% end %}
