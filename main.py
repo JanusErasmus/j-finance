@@ -52,6 +52,7 @@ def main():
             tornado.web.url(r"/", jfinance.MainHandler, name="index"),
             tornado.web.url(r"/add", jfinance.AddHandler, name="add"),
             tornado.web.url(r"/transactions", jfinance.TransactionsHandler, name="trans"),
+            tornado.web.url(r"/expenses", jfinance.ExpenseHandler, name="expense"),
             tornado.web.url(r"/categories", jfinance.CategoriesHandler, name="cats"),
             tornado.web.url(r"/budget", jfinance.BudgetHandler, name="bud"),
 

@@ -79,3 +79,40 @@ footer {
     margin: 10px auto 10px auto;
   }
 }
+
+.cat_input {
+  width: 6rem;
+  margin: 3px;
+  padding: 0;
+  border-width: 0;
+}
+
+.cat_amount {
+  display: none;
+}
+
+.expense_header {
+  display: flex;
+  border-bottom: thin solid black;
+  font-weight: bold;
+}
+
+.expense_group {
+  border-bottom: thin solid black;
+}
+
+.expense_parent {
+  width: 3rem;
+  margin: 3px;
+  padding: 0;
+  border-width: 0;
+}
+
+.expense_bullet {
+  padding-left: 1rem;
+  width: 1rem;
+}
+
+.expense {
+  display: flex;
+}

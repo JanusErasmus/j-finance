@@ -5,12 +5,18 @@
 {% end %}
 
 {% block scripts %}
+	<script src="./categories.js"></script>
 {% end %}
 
 {% block article %}
-<div class="categories">
-{% for cat in categories %}
-	<div>{{ cat.label }}</div>
-{% end %}
-</div>
+<form id="categories_form">
+	<div class="expense_header">
+		<div class="expense_parent">Sub</div>
+		<div class="cat_input">Label</div>
+		<div class="cat_input">Amount</div>
+	</div>
+	<div id="categories">
+	</div>
+	<button id="update_btn">Update</button>
+</form>
 {% end %}
