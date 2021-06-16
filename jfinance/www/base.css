@@ -4,34 +4,19 @@ html {
 
 body {
   font-family: Arial, Helvetica, sans-serif;
-  margin: 10px;
-  height: calc(100% - 20px);
   background-color: #AAAAAA;
-  display: flex;
   flex-flow: column;
-}
-
-article {
-  margin-top: 10px;
-  height: calc(100vh - 95px);
-}
-
-header {
-  flex: 0 1 auto;
-}
-
-.header_label {
-  font-size: 1.5em;
-  margin-left: 1em;
-}
-
-section {
-  flex: 1 1 auto;
+  justify-content: space-between;
+  margin: 10px;display: flex;
+  height: calc(100% - 20px);
 }
 
 footer {
   text-align: center;
-  flex: 0 1 auto;
+}
+
+.header_label {
+  font-size: 30px;
 }
 
 .sidenav {

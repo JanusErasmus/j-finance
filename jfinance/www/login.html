@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block header %}
+Log In
+{% end %}
+
+{% block article %}
+    <form action="/login" method="POST">
+        <p style="display: flex; justify-content: center;">
+            <span style="width: 6em;">Username: </span><input type="text" name="username"/><p>
+        <p style="display: flex; justify-content: center;">
+            <span style="width: 6em;">Password: </span><input type="password" name="password"/><p>
+        <p style="display: flex; justify-content: center;"><input type="submit" value="Log In" /></p>    
+    </form>
+{% end %}}
+
+
+{% block nav %}
+{% end %}
