@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 tornado = "==6.1"
+sqlalchemy = "*"
 
 [dev-packages]
 

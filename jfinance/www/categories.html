@@ -4,8 +4,13 @@
 		Categories
 {% end %}
 
-{% block styles %}
+{% block scripts %}
 {% end %}
 
 {% block article %}
+<div class="categories">
+{% for cat in categories %}
+	<div>{{ cat.label }}</div>
+{% end %}
+</div>
 {% end %}

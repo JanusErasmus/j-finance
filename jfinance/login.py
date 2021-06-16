@@ -1,5 +1,6 @@
-import jfinance
+import tornado.web
 import tornado.escape
+import jfinance
 
 
 class LoginHandler(jfinance.BaseHandler):
@@ -53,8 +54,10 @@ class LogoutHandler(jfinance.BaseHandler):
 
 
 class MainHandler(jfinance.BaseHandler):
+
     @tornado.web.authenticated
     def get(self):
         user_id = int(self.get_secure_cookie("user_id"))
+
         # logger.debug(f"User: {user_id}")
         self.render('www/index.html')

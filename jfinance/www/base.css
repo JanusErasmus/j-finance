@@ -61,7 +61,7 @@ footer {
 
 .items {
   overflow-y: auto;
-  height: calc(100vh - 105px);
+  height: calc(100vh - 95px);
 }
 
 .items_heading {
