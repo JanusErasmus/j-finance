@@ -45,6 +45,10 @@ def get_category(cat_id: int):
     return sql_session.query(CategoryMapper).filter(CategoryMapper.id == cat_id).first()
 
 
+def get_expense(exp_id: int):
+    return sql_session.query(ExpenseMapper).filter(ExpenseMapper.id == exp_id).first()
+
+
 def get_expenses(user_id: int):
     return sql_session.query(ExpenseMapper).filter(ExpenseMapper.user_id == user_id).all()
 

@@ -15,16 +15,23 @@ class ExpenseMapper(Base):
     amount = Column(Float)
 
     def __repr__(self):
+        cat_label = ""
+        if self.category is not None:
+            cat_label = self.category.label
+
         return f"<Expense[{self.id}]({self.user_id}:" \
                f" '{self.label}'" \
-               f" '{self.category.label}'" \
+               f" '{cat_label}'" \
                f" {self.amount}" \
                f")>"
 
     def map(self):
+        category = None
+        if self.category_id is not None:
+            category = {'id': self.category_id, 'label': self.category.label}
         return {
-            'user_id': self.user_id,
+            'id': self.id,
             'label': self.label,
-            'category': self.category.label,
+            'category': category,
             'amount': self.amount
         }

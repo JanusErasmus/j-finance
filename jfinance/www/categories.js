@@ -13,22 +13,26 @@ function get_expense_elment(id, expense){
     let html = ``
     let sum = 0
 
-    if(expense.expenses !== null) {
+    if(expense.category === null)
+    {
+        // console.log("Add ex:" + id)
+        html += `<div class="expense expense_group">
+            <input type="text" class="cat_input" id="category_${id}" name="category_${id}" autocomplete="off" value="${expense.label}"/>
+            <input type="number" class="cat_input" id="amount_${id}" name="amount_${id}" autocomplete="off" value="${expense.amount}"/>
+        </div>`
+        sum = expense.amount
+    } else {
         let sub_html = `<div class="expense_group">`
-        let keys = Object.keys(expense.expenses)
-        for(let k = 0; k < keys.length; k++){
-            let sub_id = keys[k]
-            // console.log("Add sub ex:" + sub_id)
-            sum += expense.expenses[sub_id].amount
+        for(let k = 0; k < expense.expenses.length; k++){
+            let sub_id = expense.expenses[k].id
+            sum += expense.expenses[k].amount
             sub_html += `<div class="expense">
-                <div class="expense_parent"></div>
                 <div class="expense_bullet">•</div>
-                <input type="text" class="cat_input" id="category_${id}_${sub_id}" name="category_${id}_${sub_id}" autocomplete="off" value="${expense.expenses[sub_id].label}"/>
-                <input type="number" class="cat_input" id="amount_${id}_${sub_id}" name="amount_${id}_${sub_id}" autocomplete="off" value="${expense.expenses[sub_id].amount}"/>
+                <input type="text" class="cat_input" id="category_${id}_${sub_id}" name="category_${id}_${sub_id}" autocomplete="off" value="${expense.expenses[k].label}"/>
+                <input type="number" class="cat_input" id="amount_${id}_${sub_id}" name="amount_${id}_${sub_id}" autocomplete="off" value="${expense.expenses[k].amount}"/>
             </div>`
         }
         sub_html += `<div class="expense">
-                    <div class="expense_parent"></div>
                     <div class="expense_bullet">•</div>
                     <input type="text" class="cat_input" id="category_${id}_n" name="category_${id}_n" autocomplete="off" placeholder="Expense"/>
                     <input type="number" class="cat_input" id="amount_${id}_n" name="amount_${id}_n" autocomplete="off" placeholder="Amount"/>
@@ -36,19 +40,10 @@ function get_expense_elment(id, expense){
                     </div>`
 
         html += `<div class="expense">
-                <input type="checkbox" class="expense_parent" id="parent_${id}" name="parent_${id}" onClick="cat_checked(${id})" checked/>
                 <input type="text" class="cat_input" id="category_${id}" name="category_${id}" autocomplete="off" value="${expense.label}"/>
                 <div class="cat_input" id="amount_${id}">${sum}</div>
             </div>`
         html += sub_html
-    } else {
-        // console.log("Add ex:" + id)
-        html += `<div class="expense expense_group">
-            <input type="checkbox" class="expense_parent" id="parent_${id}" name="parent_${id}" onClick="cat_checked(${id})"/>
-            <input type="text" class="cat_input" id="category_${id}" name="category_${id}" autocomplete="off" value="${expense.label}"/>
-            <input type="number" class="cat_input" id="amount_${id}" name="amount_${id}" autocomplete="off" value="${expense.amount}"/>
-        </div>`
-        sum = expense.amount
     }
 
     return {html: html, sum: sum};
@@ -66,7 +61,6 @@ function refresh_categories(){
         html += e.html
     }
     html += `<div class="expense expense_group">
-                    <input type="checkbox" class="expense_parent" id="parent_n" name="parent_n" onClick="cat_checked(9999)"/>
                     <input type="text" class="cat_input" id="category_n" name="category_n" autocomplete="off" placeholder="Expense"/>
                     <input type="number" class="cat_input" id="amount_n" name="amount_n" autocomplete="off" placeholder="Amount"/>
                 </div>`
@@ -137,6 +131,23 @@ function parse_form(data) {
     return form_expenses
 }
 
+function parse_expenses_list(exp_list){
+    let exp = {}
+    for(let k = 0; k < exp_list.length; k++){
+        if(exp_list[k].category === null){
+            exp[exp_list[k].id] = exp_list[k]
+        } else {
+            let cat_key = 'c' + exp_list[k].category.id
+            if (typeof exp[cat_key] === 'undefined') {
+                exp[cat_key] = {'label': exp_list[k].category.label, 'expenses': []}
+            }
+            exp[cat_key].expenses.push(exp_list[k])
+        }
+    }
+
+    return exp
+}
+
 $(document).ready(function(){     
     //override submit of the form
     $("#categories_form").submit(function(e){
@@ -156,7 +167,7 @@ $(document).ready(function(){
             success: function (jsonResponse) {
                 let objresponse = JSON.parse(jsonResponse);
                 console.log("Success")
-                console.log(objresponse)
+                expenses = parse_expenses_list(objresponse['expenses'])
                 refresh_categories()
     
             },
@@ -174,7 +185,7 @@ $(document).ready(function(){
 
         success: function (jsonResponse) {
             let objresponse = JSON.parse(jsonResponse);
-            expenses = objresponse['expenses']
+            expenses = parse_expenses_list(objresponse['expenses'])
             refresh_categories()
 
         },
