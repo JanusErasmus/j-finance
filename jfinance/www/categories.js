@@ -1,4 +1,5 @@
 let expenses = null
+let income = 0
 
 function cat_checked(id){
     let checked = $(`#parent_${id}`).is(':checked');
@@ -65,12 +66,24 @@ function refresh_categories(){
                     <input type="number" class="cat_input" id="amount_n" name="amount_n" autocomplete="off" placeholder="Amount"/>
                 </div>`
 
-
-    html += `<div class="expense">
-        <div class="expense_parent"></div>
-        <div class="cat_input"></div>
+    html += `<div class="expense_header">
+        <div class="cat_input">TOTAL:</div>
         <div class="cat_input" id="total">${sum}</div>
     </div>`
+
+    
+    html += `<div class="expense">
+    <div class="cat_input">Income:</div>
+    <input type="number" class="cat_input" id="income" name="income" autocomplete="off" value="${income}"/>
+    </div>`
+    
+    
+    let difference = income - sum
+    html += `<div class="expense">
+        <div class="cat_input">Difference:</div>
+        <div class="cat_input" id="total">${difference}</div>
+    </div>`
+
     $('#categories').html(html)
 
     $("#update_btn").prop('disabled', false);
@@ -78,55 +91,60 @@ function refresh_categories(){
 
 function parse_form(data) {
     let form_expenses = {}
-    for(let k = 0; k < data.length; k++){
+    for(let k = 0; k < data.length; k++){        
         let line = data[k].name
-        let args = line.split("_")
-        if(args[0] === "amount") {
-            if(args.length > 2){
-                let id = args[1]
-                let sub_id = args[2]
-                if (typeof form_expenses[id] === 'undefined') {
-                    form_expenses[id] = { expenses: {}}
-                }
-                if (typeof form_expenses[id].expenses === 'undefined') {
-                    form_expenses[id].expenses = {}
-                }
-                if (typeof form_expenses[id].expenses[sub_id] === 'undefined') {
-                    form_expenses[id].expenses[sub_id] = {}
-                }
-                form_expenses[id].expenses[sub_id].amount = data[k].value
+        if(line === 'income'){
+            form_expenses.income = data[k].value
+        } else {
+            let args = line.split("_")
+            if(args[0] === "amount") {
+                if(args.length > 2){
+                    let id = args[1]
+                    let sub_id = args[2]
+                    if (typeof form_expenses[id] === 'undefined') {
+                        form_expenses[id] = { expenses: {}}
+                    }
+                    if (typeof form_expenses[id].expenses === 'undefined') {
+                        form_expenses[id].expenses = {}
+                    }
+                    if (typeof form_expenses[id].expenses[sub_id] === 'undefined') {
+                        form_expenses[id].expenses[sub_id] = {}
+                    }
+                    form_expenses[id].expenses[sub_id].amount = data[k].value
 
-            } else {
-                let id = args[1]
-                if (typeof form_expenses[id] === 'undefined') {
-                    form_expenses[id] = {}
+                } else {
+                    let id = args[1]
+                    if (typeof form_expenses[id] === 'undefined') {
+                        form_expenses[id] = {}
+                    }
+                    form_expenses[id].amount = data[k].value
                 }
-                form_expenses[id].amount = data[k].value
             }
-        }
-        if(args[0] === "category") {
-            if(args.length > 2){
-                let id = args[1]
-                let sub_id = args[2]
-                if (typeof form_expenses[id] === 'undefined') {
-                    form_expenses[id] = {}
+            if(args[0] === "category") {
+                if(args.length > 2){
+                    let id = args[1]
+                    let sub_id = args[2]
+                    if (typeof form_expenses[id] === 'undefined') {
+                        form_expenses[id] = {}
+                    }
+                    if (typeof form_expenses[id].expenses === 'undefined') {
+                        form_expenses[id].expenses = {}
+                    }
+                    if (typeof form_expenses[id].expenses[sub_id] === 'undefined') {
+                        form_expenses[id].expenses[sub_id] = {}
+                    }
+                    form_expenses[id].expenses[sub_id].label = data[k].value
+                } else {
+                    let id = args[1]
+                    if (typeof form_expenses[id] === 'undefined') {
+                        form_expenses[id] = {}
+                    }
+                    form_expenses[id].label = data[k].value
                 }
-                if (typeof form_expenses[id].expenses === 'undefined') {
-                    form_expenses[id].expenses = {}
-                }
-                if (typeof form_expenses[id].expenses[sub_id] === 'undefined') {
-                    form_expenses[id].expenses[sub_id] = {}
-                }
-                form_expenses[id].expenses[sub_id].label = data[k].value
-            } else {
-                let id = args[1]
-                if (typeof form_expenses[id] === 'undefined') {
-                    form_expenses[id] = {}
-                }
-                form_expenses[id].label = data[k].value
             }
         }
     }
+
 
     return form_expenses
 }
@@ -167,6 +185,7 @@ $(document).ready(function(){
             success: function (jsonResponse) {
                 let objresponse = JSON.parse(jsonResponse);
                 console.log("Success")
+                income = objresponse['income']
                 expenses = parse_expenses_list(objresponse['expenses'])
                 refresh_categories()
     
@@ -177,7 +196,7 @@ $(document).ready(function(){
         });
     });
 
-    var dataToSend = {poes:"simone" };
+    var dataToSend = {};
     $.ajax({
         url: '/expenses',
         type: 'GET',
@@ -185,6 +204,7 @@ $(document).ready(function(){
 
         success: function (jsonResponse) {
             let objresponse = JSON.parse(jsonResponse);
+            income = objresponse['income']
             expenses = parse_expenses_list(objresponse['expenses'])
             refresh_categories()
 

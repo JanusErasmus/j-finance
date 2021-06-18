@@ -2,13 +2,15 @@ from .sql_base import Base
 from sqlalchemy import Column, Integer, String, ForeignKey, Float
 from sqlalchemy.orm import relationship
 from .category_mapper import CategoryMapper
+from .user_mapper import UserMapper
 
 
 class ExpenseMapper(Base):
     __tablename__ = 'expenses'
 
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer)
+    user_id = Column(Integer, ForeignKey('users.id'))
+    user = relationship(UserMapper)
     label = Column(String)
     category_id = Column(Integer, ForeignKey('categories.id'))
     category = relationship(CategoryMapper)
