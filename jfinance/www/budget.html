@@ -1,15 +1,21 @@
 {% extends "base.html" %}
 
-{% block scripts %}
-<script src="./budget.js"></script>
+{% block header %}
+		Budget
 {% end %}
 
-{% block header %}
-	Budget
+{% block scripts %}
+	<script src="./budget.js"></script>
 {% end %}
 
 {% block article %}
-<form method="POST">
-	<input id="add_btn" style="width: 6em" type="submit" value="Update" disabled>
+<form id="expenses_form">
+	<div class="expense_header">
+		<div class="cat_input">Label</div>
+		<div class="cat_input">Amount</div>
+	</div>
+	<div id="expenses">
+	</div>
+	<button id="update_btn">Update</button>
 </form>
 {% end %}

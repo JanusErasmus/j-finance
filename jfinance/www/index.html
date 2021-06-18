@@ -4,6 +4,7 @@
 {% end %}
 
 {% block scripts %}
+	<script src="./summary.js"></script>
 {% end %}
 
 {% block header %}
@@ -11,4 +12,10 @@
 {% end %}
 
 {% block article %}
+	<div class="expense_header">
+		<div class="cat_input">Label</div>
+		<div class="cat_input">Amount</div>
+	</div>
+	<div id="expenses">
+	</div>
 {% end %}

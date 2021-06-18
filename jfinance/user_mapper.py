@@ -12,7 +12,6 @@ class UserMapper(Base):
     budget_amount = Column(Float)
 
     def __repr__(self):
-
         return f"<User[{self.id}]({self.user_id}:" \
                f" '{self.name}'" \
                f" '{self.budget_date}'" \
