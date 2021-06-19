@@ -54,10 +54,9 @@ class LogoutHandler(jfinance.BaseHandler):
 
 
 class MainHandler(jfinance.BaseHandler):
-
     @tornado.web.authenticated
     def get(self):
         user_id = int(self.get_secure_cookie("user_id"))
-
+        user = jfinance.sql_data.get_user(user_id)
         # logger.debug(f"User: {user_id}")
-        self.render('www/index.html')
+        self.render('www/index.html', date_string=user.date_string())

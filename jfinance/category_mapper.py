@@ -11,7 +11,7 @@ class CategoryMapper(Base):
 
     def __repr__(self):
         return f"<Category[{self.id}]({self.user_id}:" \
-               f" '{self.label}'" \
+               f" {self.label}" \
                f")>"
 
     def map(self):

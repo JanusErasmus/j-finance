@@ -33,16 +33,14 @@ function add_transaction(id, sub_id){
         $('#amount').val(expense.amount)
 
         if(expense.category === null){
-            $('#cat_id').val(-1)
-            $('#exp_desc').val("")
-            $('#exp_desc').show()
+            $('#desc').val("")
+            $('#desc').show()
             $('#cat_label').hide()
-            $('#exp_desc').focus()
+            $('#desc').focus()
         } else {
-            $('#exp_desc').hide()
+            $('#desc').hide()
             $('#cat_label').html(expense.category.label)
             $('#cat_label').show()
-            $('#cat_id').val(expense.category.id)
             $('#amount').focus().select()
         }
     }
@@ -110,7 +108,7 @@ $(document).ready(function(){
         $(this).select();
      });
 
-    var dataToSend = {};
+    var dataToSend = {'balance': true};
     $.ajax({
         url: '/expenses',
         type: 'GET',

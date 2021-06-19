@@ -1,21 +1,10 @@
+import datetime
+import json
 import tornado.web
 import jfinance
-import json
 from .category_mapper import CategoryMapper
 from .expense_mapper import ExpenseMapper
-
-
-def parse_expenses(expense_obj):
-    expenses = []
-    for key, item in expense_obj.items():
-        print(f"SUB: {key} : {item}")
-        if key == 'n' and len(item['label']) > 2:
-            expenses.append({'label': item['label'], 'amount': item['amount']})
-
-    if len(expenses) == 0:
-        return None
-
-    return expenses
+from .user_mapper import UserMapper
 
 
 def get_expense_object(user_id):
@@ -27,12 +16,57 @@ def get_expense_object(user_id):
     return expense_list
 
 
+def get_balance_object(user: UserMapper):
+    expenses = jfinance.sql_data.get_expenses(user.id)
+    transactions = jfinance.sql_data.get_transactions(user.id, user.budget_date)
+
+    expense_list = []
+    for exp in expenses:
+        # print(f"DB:- {exp.map()}")
+        expense_list.append(exp.map())
+
+    if user.budget_initial and len(user.budget_initial) > 1:
+        for exp in expense_list:
+            for init_exp in json.loads(user.budget_initial):
+                if init_exp['id'] == exp['id']:
+                    exp['amount'] += init_exp['amount']
+
+    for exp in expense_list:
+        # print(f"{exp['id']}, {exp['amount']}")
+        for t in transactions:
+            if t.expense_id == exp['id']:
+                exp['amount'] -= t.amount
+
+    return expense_list
+
+
+def init_next_month(user: UserMapper):
+    expense_list = get_balance_object(user)
+    budget_initital = []
+    for exp in expense_list:
+        if exp['amount'] != 0:
+            budget_initital.append({'id': exp['id'], 'amount': exp['amount']})
+
+    # print(f"{budget_initital}")
+    user.budget_initial = json.dumps(budget_initital)
+    user.budget_date = datetime.datetime.utcnow()
+    print(f"Initialize next month: {user}")
+    jfinance.sql_session.commit()
+
+
 class ExpenseHandler(jfinance.BaseHandler):
     @tornado.web.authenticated
     def get(self):
         user_id = int(self.get_secure_cookie("user_id"))
+        calculate_balance = self.get_argument("balance", default="")
         user = jfinance.sql_data.get_user(user_id)
-        json_obj = {'user_id': user_id, 'income': user.budget_amount, 'expenses': get_expense_object(user_id)}
+
+        if len(calculate_balance) and calculate_balance == "true":
+            expenses = get_balance_object(user)
+        else:
+            expenses = get_expense_object(user_id)
+
+        json_obj = {'user_id': user_id, 'income': user.budget_amount, 'expenses': expenses}
         # print(json_obj)
         self.write(json.dumps(json_obj))
 
@@ -44,7 +78,13 @@ class ExpenseHandler(jfinance.BaseHandler):
         # print(f"POST[{user_id}] args: {arg_dict}")
 
         for key, item in arg_dict.items():
-            if key == "income":
+            if key == "next_month":
+                init_next_month(user)
+                json_obj = {'user_id': user_id, 'next_month': True}
+                self.write(json.dumps(json_obj))
+                return
+
+            elif key == "income":
                 print(f"Update income: {item}")
                 user.budget_amount = float(item)
             else:

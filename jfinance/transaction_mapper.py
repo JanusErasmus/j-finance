@@ -20,15 +20,15 @@ class TransactionMapper(Base):
 
     def __repr__(self):
         return f"<Transaction[{self.id}]({self.user_id}:" \
-               f" '{self.description}'" \
-               f" '{self.expense.label}'" \
+               f" {self.description}" \
+               f" {self.expense.label}" \
                f" {self.amount}" \
                f")>"
 
     def map(self):
         return {
             'id': self.id,
+            'expense': self.expense.label,
             'desc': self.description,
-            'expense': self.expense.map(),
             'amount': self.amount
         }

@@ -22,8 +22,8 @@ class ExpenseMapper(Base):
             cat_label = self.category.label
 
         return f"<Expense[{self.id}]({self.user_id}:" \
-               f" '{self.label}'" \
-               f" '{cat_label}'" \
+               f" {self.label}" \
+               f" {cat_label}" \
                f" {self.amount}" \
                f")>"
 

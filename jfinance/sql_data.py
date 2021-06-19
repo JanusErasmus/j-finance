@@ -1,3 +1,4 @@
+import datetime
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from sqlalchemy.exc import IntegrityError
@@ -5,6 +6,7 @@ from .sql_base import Base
 from .category_mapper import CategoryMapper
 from .expense_mapper import ExpenseMapper
 from .user_mapper import UserMapper
+from .transaction_mapper import TransactionMapper
 
 engine = create_engine('sqlite:///jfin.db', echo=False)
 Base.metadata.create_all(engine)
@@ -56,4 +58,11 @@ def get_expense(exp_id: int) -> ExpenseMapper:
 
 def get_expenses(user_id: int) -> list[ExpenseMapper]:
     return sql_session.query(ExpenseMapper).filter(ExpenseMapper.user_id == user_id).all()
+
+
+def get_transactions(user_id: int, date: datetime) -> list[TransactionMapper]:
+    return sql_session.query(TransactionMapper).filter(TransactionMapper.user_id == user_id)\
+        .filter(TransactionMapper.date > date)\
+        .order_by(TransactionMapper.date.desc())\
+        .all()
 

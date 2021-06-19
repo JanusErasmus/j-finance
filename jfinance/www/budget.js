@@ -1,13 +1,25 @@
 let expenses = null
 let income = 0
 
-function cat_checked(id){
-    let checked = $(`#parent_${id}`).is(':checked');
-    if(checked){
-        console.log(`set ${id}`)
-    }else{
-        console.log(`clear ${id}`)
-    }
+function next_month(){
+    console.log("next month")
+    var dataToSend = {'next_month': true};
+    $.ajax({
+        url: '/expenses',
+        type: 'POST',
+        data: JSON.stringify(dataToSend),
+
+        success: function (jsonResponse) {
+            let objresponse = JSON.parse(jsonResponse);
+            console.log(objresponse)
+            if(objresponse['next_month']){
+                window.location.href = '/'
+            }
+        },
+        error: function () {
+            $("#expenses").text("Error to load api");
+        }
+    });
 }
 
 function get_expense_elment(id, expense){
@@ -168,8 +180,7 @@ $(document).ready(function(){
                 let objresponse = JSON.parse(jsonResponse);
                 income = objresponse['income']
                 expenses = parse_expenses_list(objresponse['expenses'])
-                refresh_categories()
-    
+                refresh_categories()    
             },
             error: function () {
                 $("#categories").text("Error to load api");
