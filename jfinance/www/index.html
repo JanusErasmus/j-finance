@@ -12,10 +12,25 @@
 {% end %}
 
 {% block article %}
-	<div class="expense_header">
-		<div class="cat_input">Expense</div>
-		<div class="cat_input">Amount</div>
+<div class="expense_header">
+	<div class="cat_input">Expense</div>
+	<div class="cat_input">Amount</div>
+</div>
+<div id="expenses"></div>
+<div class="modal" id="modal_window" onclick="hide_form()">
+</div>
+<form id="add_form" action="/add" class="add_form" style="display: none;">
+	<div class="add_form_heading">Add Transaction</div>
+	<div style="display: flex; justify-content: space-around;">
+		<input type="number" style="display: none;" id="cat_id" name="cat_id" autocomplete="off"/>
+		<input type="number" style="display: none;" id="exp_id" name="exp_id" autocomplete="off"/>
+		<div class="cat_input" style="display: none;" id="cat_label"></div>
+		<div class="cat_input" style="display: none;" id="exp_label"></div>
+		<input type="text" style="display: none;" class="cat_input" id="exp_desc" name="exp_desc" autocomplete="off" placeholder="Description"/>
+		<input type="number" class="cat_input" id="amount" name="amount" autocomplete="off" placeholder="Amount"/>
 	</div>
-	<div id="expenses">
+	<div style="display: flex; justify-content: space-around;">
+		<input type="submit" id="add_btn" value="Add"/>
 	</div>
+</form>
 {% end %}

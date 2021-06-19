@@ -1,3 +1,13 @@
+function show_form(){
+    $('#modal_window').show()
+    $('#add_form').show()
+}
+
+function hide_form(){
+    $('#modal_window').hide()
+    $('#add_form').hide()
+}
+
 function add_transaction(id, sub_id){
     let expense = null
 
@@ -16,6 +26,25 @@ function add_transaction(id, sub_id){
     
     if(expense != null){
         console.log(expense)
+        $('#exp_id').val(expense.id)
+        $('#exp_label').html(expense.label)
+        show_form()
+        $('#exp_label').show()
+        $('#amount').val(expense.amount)
+
+        if(expense.category === null){
+            $('#cat_id').val(-1)
+            $('#exp_desc').val("")
+            $('#exp_desc').show()
+            $('#cat_label').hide()
+            $('#exp_desc').focus()
+        } else {
+            $('#exp_desc').hide()
+            $('#cat_label').html(expense.category.label)
+            $('#cat_label').show()
+            $('#cat_id').val(expense.category.id)
+            $('#amount').focus().select()
+        }
     }
 }
 
@@ -26,7 +55,7 @@ function get_expense_elment(id, expense){
     if(expense.category === null)
     {
         // console.log("Add ex:" + id)
-        html += `<div class="expense expense_group" onClick="add_transaction(${id}, null)">
+        html += `<div class="expense expense_group" onclick="add_transaction(${id}, null)">
             <div class="cat_input">${expense.label}</div>
             <div class="cat_input">${expense.amount}</div>
         </div>`
@@ -36,7 +65,7 @@ function get_expense_elment(id, expense){
         for(let k = 0; k < expense.expenses.length; k++){
             let sub_id = expense.expenses[k].id
             sum += expense.expenses[k].amount
-            sub_html += `<div class="expense sub_expense" onClick="add_transaction(${id[1]}, ${sub_id})">
+            sub_html += `<div class="expense sub_expense" onclick="add_transaction(${id[1]}, ${sub_id})">
                             <div class="expense_bullet">•</div>
                             <div class="cat_input">${expense.expenses[k].label}</div>
                             <div class="cat_input">${expense.expenses[k].amount}</div>
@@ -77,34 +106,9 @@ function refresh_categories(){
 }
 
 $(document).ready(function(){
-    //override submit of the form
-    // $("#categories_form").submit(function(e){
-
-    //     e.preventDefault();
-    //     $("#update_btn").prop('disabled', true);
-    //     console.log("Update")
-
-        
-    //     let data = $("#categories_form").serializeArray()        
-    //     data = parse_form(data)
-    //     $.ajax({
-    //         url: '/expenses',
-    //         type: 'POST',
-    //         data: JSON.stringify(data),
-    
-    //         success: function (jsonResponse) {
-    //             let objresponse = JSON.parse(jsonResponse);
-    //             console.log("Success")
-    //             income = objresponse['income']
-    //             expenses = parse_expenses_list(objresponse['expenses'])
-    //             refresh_categories()
-    
-    //         },
-    //         error: function () {
-    //             $("#categories").text("Error to load api");
-    //         }
-    //     });
-    // });
+    $("#amount").on("click", function () {
+        $(this).select();
+     });
 
     var dataToSend = {};
     $.ajax({
@@ -116,7 +120,6 @@ $(document).ready(function(){
             let objresponse = JSON.parse(jsonResponse);
             income = objresponse['income']
             expenses = parse_expenses_list(objresponse['expenses'])
-            console.log(expenses)
             refresh_categories()
         },
         error: function () {

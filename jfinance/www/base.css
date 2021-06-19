@@ -113,3 +113,33 @@ footer {
 .sub_expense:nth-child(odd) {
   background-color: #818181;
 }
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  background-color: salmon;
+  opacity: 0.3;
+}
+
+.add_form{
+  background-color: #1d5f1d;
+  position: fixed;
+  top: 18vh;
+  width: calc(100vw - 25px);
+  height: 20vh;
+  border: medium solid black;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.add_form_heading {
+  text-align: center;
+  font-size: larger;
+  font-weight: bold;
+}
