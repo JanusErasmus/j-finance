@@ -28,6 +28,10 @@
 		<input type="text" style="display: none;" class="cat_input" id="desc" name="desc" autocomplete="off" placeholder="Description"/>
 		<input type="number" class="cat_input" id="amount" name="amount" autocomplete="off" placeholder="Amount"/>
 	</div>
+	<div style="display: flex;">
+		<div class="cat_input">Available</div>
+		<input type="number" class="cat_input" id="available" name="available" autocomplete="off" placeholder="Available" onchange="available_changed()"/>
+	</div>
 	<div style="display: flex; justify-content: space-around;">
 		<input type="submit" id="add_btn" value="Add"/>
 	</div>

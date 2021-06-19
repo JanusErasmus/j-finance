@@ -1,3 +1,11 @@
+let expenses = null
+let available = 0
+
+function available_changed(){
+    // console.log("changed")
+    $('#amount').val(available - $('#available').val())
+}
+
 function show_form(){
     $('#modal_window').show()
     $('#add_form').show()
@@ -31,6 +39,7 @@ function add_transaction(id, sub_id){
         show_form()
         $('#exp_label').show()
         $('#amount').val(expense.amount)
+        $('#available').val(available)
 
         if(expense.category === null){
             $('#desc').val("")
@@ -128,6 +137,8 @@ function refresh_categories(){
         <div class="cat_input ${amount_class}" id="total">${sum.toLocaleString()}</div>
     </div>`
 
+    available = sum
+
     $('#expenses').html(html)
 }
 
@@ -135,6 +146,10 @@ $(document).ready(function(){
     $("#amount").on("click", function () {
         $(this).select();
      });
+
+     $("#available").on("click", function () {
+         $(this).select();
+      });
 
     var dataToSend = {'balance': true};
     $.ajax({
