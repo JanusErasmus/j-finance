@@ -15,7 +15,7 @@
 <div class="items">
 {% for t in transactions %}
 	<div class="item_row">
-		<div class="cat_input">{{ t['expense'] }}</div><div class="cat_input">{{ t['desc'] }}</div><div class="cat_input">{{ t['amount'] }}</div>
+		<div class="cat_input">{{ t['expense'] }}</div><div class="cat_input">{{ t['desc'] }}</div><div class="cat_input">{{ f"{t['amount']:,.0f}" }}</div>
 	</div>
 {% end %}
 </div>

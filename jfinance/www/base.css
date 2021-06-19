@@ -110,6 +110,14 @@ footer {
   display: flex;
 }
 
+.expense_null {
+  color: #77777777;
+}
+
+.expense_negative {
+  color: brown;
+}
+
 .sub_expense:nth-child(odd) {
   background-color: #818181;
 }
