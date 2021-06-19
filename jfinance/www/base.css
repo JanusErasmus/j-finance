@@ -81,7 +81,7 @@ footer {
 }
 
 .cat_input {
-  width: 6rem;
+  width: 7rem;
   margin: 3px;
   padding: 0;
   border-width: 0;
@@ -108,4 +108,8 @@ footer {
 
 .expense {
   display: flex;
+}
+
+.sub_expense:nth-child(odd) {
+  background-color: #818181;
 }

@@ -155,7 +155,6 @@ $(document).ready(function(){
 
         e.preventDefault();
         $("#update_btn").prop('disabled', true);
-        console.log("Update")
 
         
         let data = $("#expenses_form").serializeArray()        
@@ -167,7 +166,6 @@ $(document).ready(function(){
     
             success: function (jsonResponse) {
                 let objresponse = JSON.parse(jsonResponse);
-                console.log("Success")
                 income = objresponse['income']
                 expenses = parse_expenses_list(objresponse['expenses'])
                 refresh_categories()
@@ -189,7 +187,6 @@ $(document).ready(function(){
             let objresponse = JSON.parse(jsonResponse);
             income = objresponse['income']
             expenses = parse_expenses_list(objresponse['expenses'])
-            console.log(expenses)
             refresh_categories()
 
         },
