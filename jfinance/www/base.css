@@ -73,13 +73,6 @@ footer {
   background-color: #818181;
 }
 
-@media (min-width: 800px) {
-  body {
-    width: 800px;
-    margin: 10px auto 10px auto;
-  }
-}
-
 .cat_input {
   width: 7rem;
   margin: 3px;
@@ -133,7 +126,7 @@ footer {
   opacity: 0.3;
 }
 
-.add_form{
+.add_form {
   background-color: #1d5f1d;
   position: fixed;
   top: 18vh;
@@ -150,4 +143,15 @@ footer {
   text-align: center;
   font-size: larger;
   font-weight: bold;
+}
+
+@media (min-width: 800px) {
+  body {
+    width: 800px;
+    margin: 10px auto 10px auto;
+  }
+  .add_form {
+    width: 800px;
+    height: 100px;
+  }
 }
